@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registration</title>
+    <link rel="stylesheet" href="../styles/index.scss">
+    <link rel="stylesheet" href="../styles/form.scss">
+</head>
+<body>
+<div class="form-container">
+    <div class="form-title">
+        <h1>Регистрация</h1>
+    </div>
+    <form action="#" method="POST">
+        <div>
+            {{>formGroup type="text" name="first_name" text="Имя"}}
+            {{>formGroup type="text" name="second_name" text="Фамилия"}}
+            {{>formGroup type="text" name="login" text="Логин"}}
+            {{>formGroup type="email" name="email" text="Почта"}}
+            {{>formGroup type="phone" name="phone" text="Телефон"}}
+            {{>formGroup type="password" name="password" text="Пароль"}}
+            {{>formGroup type="password" name="confirm-password" text="Пароль (ещё раз)"}}
+        </div>
+        <div class="form-button_container">
+            {{>button style="primary" isLink="true" url="http://localhost:3000/src/pages/chats.html" text="Зарегистрироваться"}}
+            {{>button style="secondary" isLink="true" url="http://localhost:3000/src/pages/auth.html"
+            type="submit" text="Войти"}}
+        </div>
+    </form>
+</div>
+</body>
+</html>
