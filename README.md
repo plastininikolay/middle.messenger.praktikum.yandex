@@ -28,4 +28,8 @@
 ```npm run dev```
 #### Переход по страницам осуществляется через обращение к конкретным html страницам например: `http://localhost:3000/src/pages/chats.html`
 
-#### деплой на netlify - https://plastininikolay-praktikum-yandex.netlify.app
+## Ссылки:
+
+### На сверстанные макеты:
+
+Netlify: https://plastininikolay-praktikum-yandex.netlify.app
