@@ -5,8 +5,7 @@
 }
 .chat-list {
     width: 300px;
-    background-color: #cfd8ee;
-    border-right: 1px solid #edf8ff;
+    background-color: var(--white-color);
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -39,7 +38,7 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background-color: #edf2ff;
+    background-color: var(--chat-window-color);
 }
 .chat-window h2 {
     margin: 0 0 20px;
@@ -47,11 +46,11 @@
 .messages {
     flex: 1;
     overflow-y: auto;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     padding: 20px;
     margin-bottom: 20px;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     display: flex;
     flex-direction: column;
 }
@@ -62,11 +61,11 @@
     max-width: fit-content;
 }
 .sender {
-    background-color: #d4edd9;
+    background-color: var(--chat-sender-color);
     align-self: flex-start;
 }
 .receiver {
-    background-color: #cce5ff;
+    background-color: var(--chat-receiver-color);
     align-self: flex-end;
     position: relative;
     right: 0;
@@ -77,7 +76,7 @@
 input[type="text"] {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     margin-right: 10px;
 }

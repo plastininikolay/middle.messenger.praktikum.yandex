@@ -1,5 +1,5 @@
 .error-container {
-    background: #fff;
+    background-color: var(--white-color);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -19,6 +19,6 @@
 .error-container h2 {
     font-weight: normal;
     font-size: 20px;
-    color: #333;
+    color: var(--secondary-color);
     margin: 10px 0 70px;
 }

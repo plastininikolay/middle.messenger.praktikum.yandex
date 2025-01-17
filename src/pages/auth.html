@@ -10,20 +10,20 @@
     <link rel="stylesheet" href="../styles/form.scss">
 </head>
 <body>
-<div class="form-container">
-    <div class="form-title">
-        <h1>Вход</h1>
-    </div>
-    <form action="#" method="POST">
-       <div>
-           {{>formGroup type="text" name="login" text="Логин"}}
-           {{>formGroup type="password" name="password" text="Пароль"}}
-       </div>
-        <div class="form-button_container">
-            {{>button style="primary" isLink="true" url="http://localhost:3000/src/pages/chats.html" text="Авторизоваться"}}
-            {{>button style="secondary" isLink="true" url="http://localhost:3000/src/pages/registration.html" text="Нет аккаунта?"}}
+    <main class="form-container">
+        <div class="form-title">
+            <h1>Вход</h1>
         </div>
-    </form>
-</div>
+        <form action="#" method="POST">
+           <div>
+               {{>formGroup type="text" name="login" text="Логин"}}
+               {{>formGroup type="password" name="password" text="Пароль"}}
+           </div>
+            <div class="form-button_container">
+                {{>button style="primary" isLink="true" url="/src/pages/chats.html" text="Авторизоваться"}}
+                {{>button style="secondary" isLink="true" url="/src/pages/registration.html" text="Нет аккаунта?"}}
+            </div>
+        </form>
+    </main>
 </body>
 </html>

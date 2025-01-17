@@ -2,7 +2,7 @@
     width: 550px;
     margin: 60px auto;
     padding: 20px;
-    background: #fff;
+    background-color: var(--white-color);
 }
 .profile-header {
     display: flex;
@@ -20,7 +20,7 @@
 
 .username {
     font-size: 16px;
-    color: #333;
+    color: var(--secondary-color);
     margin: 0;
 }
 
@@ -40,11 +40,11 @@
 .profile-link {
     font-size: 13px;
     line-height: 40px;
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid var(--border-color);
     color: var(--primary-color);
     text-decoration: none;
 }
 .exit-link {
-    color: #ff5341;
+    color: var(--accent-color);
     border-bottom: none;
 }
