@@ -1,0 +1,15 @@
+{{#if isLink}}
+    <a href="{{url}}" class="button
+        {{style}}
+        {{#if isFull}} full {{/if}}"
+    >
+        {{text}}
+    </a>
+{{else}}
+    <button class="button
+        {{style}}
+        {{#if isFull}} full {{/if}}"
+    >
+        {{text}}
+    </button>
+{{/if}}
