@@ -1,6 +1,10 @@
-import {resolve} from 'path';
+import {resolve, dirname} from 'path';
 import {defineConfig} from 'vite'
 import handlebars from 'vite-plugin-handlebars';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default defineConfig({
     base: './',

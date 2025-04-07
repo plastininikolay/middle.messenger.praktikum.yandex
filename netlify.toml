@@ -3,5 +3,5 @@
     command = "npm run build"
 [[redirects]]
     from = "/*"
-    to = "/src/pages/404.html"
+    to = "/404"
     status = 404
