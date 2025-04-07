@@ -31,6 +31,6 @@ export class FormGroup extends Block {
 		}
 	}
 	validate(): boolean {
-		return validateInput({element: this._element, props: this.props, setProps: this.setProps})
+		return validateInput({element: this._element, props: this.props as FormGroupProps, setProps: this.setProps})
 	}
 }

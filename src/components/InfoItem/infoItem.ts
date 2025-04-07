@@ -34,6 +34,6 @@ export class InfoItem extends Block {
 				</div>`
 	}
 	validate(): boolean {
-		return validateInput({element: this._element, props: this.props, setProps: this.setProps})
+		return validateInput({element: this._element, props: this.props as InfoItemProps, setProps: this.setProps})
 	}
 }

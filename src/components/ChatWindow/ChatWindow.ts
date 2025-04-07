@@ -4,7 +4,6 @@ import {ButtonVariantEnum} from "../Button/types.ts";
 import {ChatMessage, ChatWindowProps} from "./types.ts";
 import './ChatWindow.scss';
 import {avatarUrl} from "../../mocks.ts";
-import {validateInput} from "../../utils/validation.ts";
 import {ChatInput} from "../ChatInput/ChatInput.ts";
 import {TYPES_VALIDATION} from "../../types.ts";
 import {getFormData} from "../../utils/logForm.ts";
@@ -31,21 +30,6 @@ export class ChatWindow extends Block {
 			ChatInput: ChatInputComponent
 		});
 
-	}
-
-	componentDidMount() {
-		const inputElement = this._element?.querySelector('input');
-
-		if (inputElement) {
-			inputElement.addEventListener('blur', () => {
-				this.validate();
-			}, {once: true});
-		} else {
-			console.error(`Element with id ${this.props.name} not found.`);
-		}
-	}
-	validate(): boolean {
-		return validateInput({element: this._element, props: this.props, setProps: this.setProps})
 	}
 
 	override render(): string {

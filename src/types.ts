@@ -27,7 +27,7 @@ export interface ChatData {
 }
 
 export interface BaseInputType {
-	name?: string;
+	name: string;
 	required?: boolean;
 	validationMessage?: string;
 	value?: string

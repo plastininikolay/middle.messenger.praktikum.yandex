@@ -29,6 +29,6 @@ export class ChatInput extends Block {
 		}
 	}
 	validate(): boolean {
-		return validateInput({element: this._element, props: this.props, setProps: this.setProps})
+		return validateInput({element: this._element, props: this.props as BaseInputType, setProps: this.setProps})
 	}
 }

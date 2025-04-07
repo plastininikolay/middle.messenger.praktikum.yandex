@@ -1,9 +1,9 @@
 import {FormGroup} from "../components/FormGroup/FormGroup.ts";
-import {FormGroupProps} from "../components/FormGroup/types.ts";
+import {BaseInputType} from "../types.ts";
 
 export const getFormData = (formGroups: FormGroup[]) => {
 	return formGroups.reduce((prevVal, val) => {
-		const props = val.getProps() as FormGroupProps
+		const props = val.getProps() as BaseInputType
 		return {...prevVal, [props.name]: props.value}
 	}, {})
 }

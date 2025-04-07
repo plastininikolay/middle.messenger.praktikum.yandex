@@ -10,8 +10,10 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "eslint": "eslint **/*.ts",
-    "stylelint": "stylelint **/*.scss"
+    "lint-fix:code": "eslint --fix **/*.ts",
+    "lint-fix:styles": "stylelint --fix ./src/**/*.{scss,css}",
+    "lint-fix": "yarn lint-fix:code && yarn lint-fix:styles",
+    "ts-check": "tsc --skipLibCheck --noEmit --project tsconfig.json"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
