@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "vite build && node server.cjs",
-    "build": "tsc && vite build --base=/",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "lint-fix:code": "eslint --fix **/*.ts",
     "lint-fix:styles": "stylelint --fix ./src/**/*.{scss,css}",
