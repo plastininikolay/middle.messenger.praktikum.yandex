@@ -6,3 +6,4 @@
     to = "/index.html"
     status = 200
     force = true
+    conditions = { header = {"Accept" = ["text/html"]}}
