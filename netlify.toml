@@ -3,6 +3,6 @@
     command = "npm run build"
 [[redirects]]
     from = "/*"
-    to = "/src/index.html"
+    to = "/index.html"
     status = 200
     force = true
