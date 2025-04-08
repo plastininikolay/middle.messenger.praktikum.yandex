@@ -7,7 +7,7 @@
     "node": ">=16"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite build && node server.cjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint-fix:code": "eslint --fix **/*.ts",
@@ -28,5 +28,7 @@
     "vite": "^5.4.10",
     "vite-plugin-handlebars": "^2.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
