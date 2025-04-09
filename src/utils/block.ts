@@ -37,10 +37,39 @@ export default class Block {
 	}
 
 	private _addEvents(): void {
-		const {events = {}} = this.props;
+		const {events = {}, eventsForInput = {}} = this.props;
+		const inputElement = this._element?.querySelector('input');
+
 		Object.keys(events).forEach(eventName => {
 			if (this._element) {
-				this._element.addEventListener(eventName, events[eventName]);
+				this._element.addEventListener(eventName, (e: Event) => {
+					e.preventDefault();
+					events[eventName](e);
+				});
+			}
+		});
+		Object.keys(eventsForInput).forEach(eventName => {
+			if (inputElement) {
+				inputElement.addEventListener(eventName, (e: Event) => {
+					e.preventDefault();
+					eventsForInput[eventName](e);
+				});
+			}
+		});
+	}
+
+	private _removeEvents(): void {
+		const { events = {}, eventsForInput = {}} = this.props;
+		const inputElement = this._element?.querySelector('input');
+
+		Object.keys(events).forEach(eventName => {
+			if (this._element) {
+				this._element.removeEventListener(eventName, events[eventName]);
+			}
+		});
+		Object.keys(eventsForInput).forEach(eventName => {
+			if (inputElement) {
+				inputElement.removeEventListener(eventName, eventsForInput[eventName]);
 			}
 		});
 	}
@@ -78,6 +107,7 @@ export default class Block {
 	}
 
 	private _componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): void {
+		this._removeEvents();
 		const response = this.componentDidUpdate(oldProps, newProps);
 		if (!response) {
 			return;

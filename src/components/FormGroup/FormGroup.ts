@@ -19,18 +19,19 @@ export class FormGroup extends Block {
                 ${validationMessage ? `<div class="error-message">${validationMessage}</div>` : ''}
             </div>`;
 	}
-	componentDidMount() {
-		const inputElement = this._element?.querySelector('input');
-
-		if (inputElement) {
-				inputElement.addEventListener('blur', () => {
-					this.validate();
-				}, {once: true});
-		} else {
-			console.error(`Element with id ${this.props.name} not found.`);
-		}
-	}
+	// componentDidMount() {
+	// 	const inputElement = this._element?.querySelector('input');
+	//
+	// 	if (inputElement) {
+	// 			inputElement.addEventListener('blur', () => {
+	// 				this.validate();
+	// 			}, {once: true});
+	// 	} else {
+	// 		console.error(`Element with id ${this.props.name} not found.`);
+	// 	}
+	// }
 	validate(): boolean {
-		return validateInput({element: this._element, props: this.props as FormGroupProps, setProps: this.setProps})
+		const inputElement = this._element?.querySelector('input');
+		return validateInput({value: inputElement?.value, props: this.props as FormGroupProps})
 	}
 }

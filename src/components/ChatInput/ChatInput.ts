@@ -17,18 +17,9 @@ export class ChatInput extends Block {
 				<input type="text" placeholder="Введите сообщение..." value="${value || ''}"/>
 		</div>`;
 	}
-	componentDidMount() {
+	validate(): boolean {
 		const inputElement = this._element?.querySelector('input');
 
-		if (inputElement) {
-				inputElement.addEventListener('blur', () => {
-					this.validate();
-				}, {once: true});
-		} else {
-			console.error(`Element with id ${this.props.name} not found.`);
-		}
-	}
-	validate(): boolean {
-		return validateInput({element: this._element, props: this.props as BaseInputType, setProps: this.setProps})
+		return validateInput({value: inputElement?.value, props: this.props as BaseInputType})
 	}
 }

@@ -6,11 +6,35 @@ import '../../styles/form.scss'
 import {PAGE_NAMES} from "../../App.ts";
 import {getFormData} from "../../utils/logForm.ts";
 import {TYPES_VALIDATION} from "../../types.ts";
+import {validateInput} from "../../utils/validation.ts";
+import {FormGroupProps} from "../../components/FormGroup/types.ts";
 
 export class AuthPage extends Block {
 	constructor() {
-		const FormLogin = new FormGroup({name: 'login', type: 'text', labelText: 'Логин', typeOfValidation: TYPES_VALIDATION.login});
-		const FormPassword = new FormGroup({name: 'password', type: 'password', labelText: 'Пароль', typeOfValidation: TYPES_VALIDATION.password});
+		const FormLogin = new FormGroup({
+			name: 'login',
+			type: 'text',
+			labelText: 'Логин',
+			typeOfValidation: TYPES_VALIDATION.login,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({value: element?.value, props: this.children.FormLogin.getProps() as FormGroupProps})
+				}
+			}
+		});
+		const FormPassword = new FormGroup({
+			name: 'password',
+			type: 'password',
+			labelText: 'Пароль',
+			typeOfValidation: TYPES_VALIDATION.password,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({value: element?.value, props: this.children.FormPassword.getProps() as FormGroupProps})
+				}
+			}
+		});
 		const validateAll = () => {
 			FormLogin.validate();
 			FormPassword.validate();
@@ -30,7 +54,9 @@ export class AuthPage extends Block {
 				url: PAGE_NAMES.chats,
 				variant: ButtonVariantEnum.PRIMARY,
 				label: 'Авторизоваться',
-				onClick: onClickButton,
+				events: {
+					click: onClickButton,
+				}
 			}),
 			ButtonReg: new Button({
 				isFull: false,
@@ -48,7 +74,7 @@ export class AuthPage extends Block {
 				<div class="form-title">
 					<h1>Вход</h1>
 				</div>
-				<form action="#" method="POST">
+				<form>
 				   <div>
 					   {{{ FormLogin }}}
 					   {{{ FormPassword }}}

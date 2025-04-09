@@ -7,12 +7,41 @@ import {TYPES_VALIDATION, UserData} from "../../types.ts";
 import {PAGE_NAMES} from "../../App.ts";
 import {avatarUrl} from "../../mocks.ts";
 import {getFormData} from "../../utils/logForm.ts";
+import {validateInput} from "../../utils/validation.ts";
+import {InfoItemProps} from "../../components/InfoItem/types.ts";
 
 export class ChangePasswordPage extends Block {
 	constructor(user: UserData) {
-			const OldPassword = new InfoItem({labelText: 'Старый пароль', name: 'password', value: user.password});
-			const NewPassword = new InfoItem({labelText: 'Новый пароль', name: 'new_password', value: '', edit: true, typeOfValidation: TYPES_VALIDATION.password});
-			const CheckNewPassword = new InfoItem({labelText: 'Повторите новый пароль', name: 'check_new_password', value: '', edit: true, typeOfValidation: TYPES_VALIDATION.password});
+			const OldPassword = new InfoItem({
+				labelText: 'Старый пароль',
+				name: 'password',
+				value: user.password
+			});
+			const NewPassword = new InfoItem({
+				labelText: 'Новый пароль',
+				name: 'new_password',
+				value: '', edit: true,
+				typeOfValidation: TYPES_VALIDATION.password,
+				eventsForInput: {
+					blur: (e) => {
+						const element = e.currentTarget as HTMLInputElement;
+						validateInput({value: element?.value, props: this.children.NewPassword.getProps() as InfoItemProps})
+					}
+				}
+			});
+			const CheckNewPassword = new InfoItem({
+				labelText: 'Повторите новый пароль',
+				name: 'check_new_password',
+				value: '',
+				edit: true,
+				typeOfValidation: TYPES_VALIDATION.password,
+				eventsForInput: {
+					blur: (e) => {
+						const element = e.currentTarget as HTMLInputElement;
+						validateInput({value: element?.value, props: this.children.CheckNewPassword.getProps() as InfoItemProps})
+					}
+				}
+			});
 
 		const validateAll = () => {
 			NewPassword.validate();
@@ -28,17 +57,17 @@ export class ChangePasswordPage extends Block {
 			super({
 			avatar: user.avatar,
 			username: user.username || 'User',
-			InfoItems: [
 				OldPassword,
 				NewPassword,
-				CheckNewPassword
-			],
+				CheckNewPassword,
 			SaveButton: new Button({
 				isFull: true,
 				url: PAGE_NAMES.profile,
 				label: 'Сохранить',
 				variant: ButtonVariantEnum.PRIMARY,
-				onClick: onClickButton,
+				events: {
+					click: onClickButton
+				}
 			}),
 		});
 	}
@@ -51,7 +80,9 @@ export class ChangePasswordPage extends Block {
                     <h1 class="username">${this.props.username}</h1>
                 </div>
                 <div class="profile-info">
-                    {{{ InfoItems }}}
+                    {{{ OldPassword }}}
+                    {{{ NewPassword }}}
+                    {{{ CheckNewPassword }}}
                 </div>
                 <div class="profile-actions">
                     <div class="profile-buttons">

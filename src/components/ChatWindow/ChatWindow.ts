@@ -5,12 +5,25 @@ import {ChatMessage, ChatWindowProps} from "./types.ts";
 import './ChatWindow.scss';
 import {avatarUrl} from "../../mocks.ts";
 import {ChatInput} from "../ChatInput/ChatInput.ts";
-import {TYPES_VALIDATION} from "../../types.ts";
+import {BaseInputType, TYPES_VALIDATION} from "../../types.ts";
 import {getFormData} from "../../utils/logForm.ts";
+import {validateInput} from "../../utils/validation.ts";
 
 export class ChatWindow extends Block {
 	constructor(props: ChatWindowProps) {
-		const ChatInputComponent = new ChatInput({name: 'message', typeOfValidation: TYPES_VALIDATION.message})
+		const ChatInputComponent = new ChatInput({
+			name: 'message',
+			typeOfValidation: TYPES_VALIDATION.message,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.ChatInput.getProps() as BaseInputType
+					})
+				}
+			}
+			})
 		const validateAll = () => {
 			ChatInputComponent.validate();
 		}
@@ -25,7 +38,9 @@ export class ChatWindow extends Block {
 			SendButton: new Button({
 				label: 'Отправить',
 				variant: ButtonVariantEnum.PRIMARY,
-				onClick: onClickButton,
+				events: {
+					click: onClickButton
+				}
 			}),
 			ChatInput: ChatInputComponent
 		});

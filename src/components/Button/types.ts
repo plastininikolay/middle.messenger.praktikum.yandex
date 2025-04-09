@@ -6,11 +6,11 @@ export enum ButtonVariantEnum  {
 
 export interface ButtonProps {
 	label: string;
-	onClick?: () => void;
 	variant: ButtonVariantEnum;
 	isDisabled?: boolean;
 	isFull?: boolean;
 	isLink?: boolean;
 	url?: string;
 	color?: string;
+	events?: Record<string, (e: Event) => void>
 }

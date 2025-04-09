@@ -30,6 +30,7 @@ export interface BaseInputType {
 	name: string;
 	required?: boolean;
 	validationMessage?: string;
-	value?: string
-	typeOfValidation?: TYPES_VALIDATION
+	value?: string;
+	typeOfValidation?: TYPES_VALIDATION;
+	eventsForInput?: Record<string, (e: Event) => void>
 }

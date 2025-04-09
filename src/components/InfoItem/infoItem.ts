@@ -7,19 +7,6 @@ export class InfoItem extends Block {
 	constructor(props: InfoItemProps) {
 		super(props);
 	}
-	componentDidMount() {
-		const inputElement = this._element?.querySelector('input');
-
-		if (this.props.edit) {
-			if (inputElement) {
-				inputElement.addEventListener('blur', () => {
-					this.validate();
-				}, {once: true});
-			} else {
-				console.error(`Element with id ${this.props.name} not found.`);
-			}
-		}
-	}
 	render(): string {
 		const {name, value, edit, validationMessage, labelText} = this.props as InfoItemProps;
 		return `
@@ -34,6 +21,7 @@ export class InfoItem extends Block {
 				</div>`
 	}
 	validate(): boolean {
-		return validateInput({element: this._element, props: this.props as InfoItemProps, setProps: this.setProps})
+		const inputElement = this._element?.querySelector('input');
+		return validateInput({value: inputElement?.value, props: this.props as InfoItemProps})
 	}
 }

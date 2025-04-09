@@ -4,9 +4,6 @@ import './Button.scss'
 
 export class Button extends Block {
 
-	private isClickListenerAdded: boolean = false;
-
-
 	constructor(props: ButtonProps) {
 		super(props);
 	}
@@ -26,12 +23,5 @@ export class Button extends Block {
 				style="${colorStyle}">
 				${label}
 			</button>`
-	}
-
-	componentDidMount() {
-		if (this.props.onClick && !this.isClickListenerAdded) {
-			this._element?.addEventListener('click', this.props.onClick);
-			this.isClickListenerAdded = true;
-		}
 	}
 }
