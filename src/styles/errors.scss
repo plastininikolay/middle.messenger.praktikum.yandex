@@ -6,19 +6,19 @@
     align-items: center;
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
-}
+    transform: translate(-50%, -50%);
 
-.error-container h1 {
-    font-weight: normal;
-    font-size: 40px;
-    margin: 0;
+    h1 {
+      font-weight: normal;
+      font-size: 40px;
+      margin: 0;
 
-}
+    }
 
-.error-container h2 {
-    font-weight: normal;
-    font-size: 20px;
-    color: var(--secondary-color);
-    margin: 10px 0 70px;
+    h2 {
+      font-weight: normal;
+      font-size: 20px;
+      color: var(--secondary-color);
+      margin: 10px 0 70px;
+    }
 }

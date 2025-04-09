@@ -1,0 +1,22 @@
+.input {
+  flex: 1;
+  position: relative;
+
+  input[type="text"] {
+    width: 100%;
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+  }
+
+  .error-message {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    font-size: 11px;
+    color: #ff5341;
+  }
+}
