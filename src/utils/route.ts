@@ -1,5 +1,5 @@
-import Block from "./block.ts";
-import render from "./render.ts";
+import Block from "./block";
+import render from "./render";
 
 class Route {
 	private _pathname: string;

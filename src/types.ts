@@ -1,3 +1,14 @@
+export enum PAGE_NAMES {
+	notFound = "404",
+	serverError = "500",
+	authentication = "auth",
+	chats = "chats",
+	profile = "profile",
+	profileEdit = "profile-edit",
+	registration = "registration",
+	chagePassword = "chage-password",
+}
+
 export enum TYPES_VALIDATION {
 	first_name = "first_name",
 	second_name = "second_name",

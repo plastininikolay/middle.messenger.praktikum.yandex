@@ -1,5 +1,5 @@
-import Route from "./route.ts";
-import Block from "./block.ts";
+import Route from "./route";
+import Block from "./block";
 
 class Router {
 	private static __instance: Router | null = null;

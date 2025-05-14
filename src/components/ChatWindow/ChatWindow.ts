@@ -1,59 +1,60 @@
-import Block from "../../utils/block.ts";
-import {Button} from "../Button/Button.ts";
-import {ButtonVariantEnum} from "../Button/types.ts";
-import {ChatMessage, ChatWindowProps} from "./types.ts";
-import './ChatWindow.scss';
-import {avatarUrl} from "../../mocks.ts";
-import {ChatInput} from "../ChatInput/ChatInput.ts";
-import {BaseInputType, TYPES_VALIDATION} from "../../types.ts";
-import {getFormData} from "../../utils/logForm.ts";
-import {validateInput} from "../../utils/validation.ts";
+import Block from "../../utils/block";
+import { Button } from "../Button/Button";
+import { ButtonVariantEnum } from "../Button/types";
+import { ChatMessage, ChatWindowProps } from "./types";
+import "./ChatWindow.scss";
+import { avatarUrl } from "../../mocks";
+import { ChatInput } from "../ChatInput/ChatInput";
+import { BaseInputType, TYPES_VALIDATION } from "../../types";
+import { getFormData } from "../../utils/logForm";
+import { validateInput } from "../../utils/validation";
 
 export class ChatWindow extends Block {
 	constructor(props: ChatWindowProps) {
 		const ChatInputComponent = new ChatInput({
-			name: 'message',
+			name: "message",
 			typeOfValidation: TYPES_VALIDATION.message,
 			eventsForInput: {
 				blur: (e) => {
 					const element = e.currentTarget as HTMLInputElement;
 					validateInput({
 						value: element?.value,
-						props: this.children.ChatInput.getProps() as BaseInputType
-					})
-				}
-			}
-			})
+						props: this.children.ChatInput.getProps() as BaseInputType,
+					});
+				},
+			},
+		});
 		const validateAll = () => {
 			ChatInputComponent.validate();
-		}
+		};
 		const onClickButton = () => {
 			validateAll();
-			console.log(getFormData([
-				ChatInputComponent,
-			]))
-		}
+			console.log(getFormData([ChatInputComponent]));
+		};
 		super({
 			...props,
 			SendButton: new Button({
-				label: 'Отправить',
+				label: "Отправить",
 				variant: ButtonVariantEnum.PRIMARY,
 				events: {
-					click: onClickButton
-				}
+					click: onClickButton,
+				},
 			}),
-			ChatInput: ChatInputComponent
+			ChatInput: ChatInputComponent,
 		});
-
 	}
 
 	override render(): string {
-		const messageElements = this.props.messages.map((msg: ChatMessage) => `
-            <div class="message ${msg.sender ? 'sender' : 'receiver'}">
+		const messageElements = this.props.messages
+			.map(
+				(msg: ChatMessage) => `
+            <div class="message ${msg.sender ? "sender" : "receiver"}">
 				${msg.text}
 				<span>${msg.time}</span>
 			</div>
-        `).join('');
+        `,
+			)
+			.join("");
 		return `
             <div class="chat-window">
 				<div class="chat-top">
