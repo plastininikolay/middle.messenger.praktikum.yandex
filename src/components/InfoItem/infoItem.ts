@@ -29,4 +29,8 @@ export class InfoItem extends Block {
 			props: this.props as InfoItemProps,
 		});
 	}
+	
+	isValid(): boolean {
+		return !(this.props as InfoItemProps).validationMessage;
+	}
 }

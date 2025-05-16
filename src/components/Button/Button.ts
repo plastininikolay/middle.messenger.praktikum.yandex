@@ -14,14 +14,13 @@ export class Button extends Block {
 		const buttonClass =
 			`button ${variant} ${isFull ? "full" : ""} ${isDisabled ? "disabled" : ""}`.trim();
 		const colorStyle = color ? `color: ${color}` : "";
-		return isLink
-			? `<a href="${url}" class="${buttonClass}" style="${colorStyle}">
+		
+		return `<button 
+			class="${buttonClass}" 
+			style="${colorStyle}"
+			${isLink && url ? `data-route="${url}"` : ""}
+			${isDisabled ? "disabled" : ""}>
 			${label}
-			</a>`
-			: `<button
-				class="${buttonClass}"
-				style="${colorStyle}">
-				${label}
-			</button>`;
+		</button>`;
 	}
 }

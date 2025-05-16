@@ -13,11 +13,11 @@ export class ChatItem extends Block {
 		const activeClass = isActive ? "active" : "";
 		return `
             <div class="chat-item ${activeClass}">
-            <img src="${chat.avatar || avatarUrl}" alt="Аватар ${chat.author}"/>
+            <img src="${chat.avatar || avatarUrl}" alt="Аватар ${chat.title}"/>
             	<div class="chat-info">
-            		<div class="author">${chat.author}</div>
-            		<div class="text">${chat.text}</div>
-            		<div class="unread-messages ${!chat.unreadMessages ? "hidden" : ""}">${chat.unreadMessages}</div>
+            		<div class="author">${chat.title}</div>
+            		<div class="text">${chat.last_message}</div>
+            		<div class="unread-messages ${!chat.unread_count ? "hidden" : ""}">${chat.unread_count}</div>
 				</div>
 
 			</div>

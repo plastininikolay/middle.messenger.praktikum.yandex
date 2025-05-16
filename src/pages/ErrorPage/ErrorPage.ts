@@ -3,9 +3,14 @@ import { Button } from "../../components/Button/Button";
 import { ButtonVariantEnum } from "../../components/Button/types";
 import "../../styles/errors.scss";
 import { PAGE_NAMES } from "../../types";
+import Router from "../../utils/router";
 
 export class ErrorPage extends Block {
 	constructor() {
+		const onChatClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.chats}`);
+		};
+
 		super({
 			Button: new Button({
 				isFull: false,
@@ -13,6 +18,9 @@ export class ErrorPage extends Block {
 				url: PAGE_NAMES.chats,
 				variant: ButtonVariantEnum.SECONDARY,
 				label: "Назад к чатам",
+				events: {
+					click: onChatClick
+				},
 			}),
 		});
 	}

@@ -1,9 +1,8 @@
+import {ChatData} from "../../types.ts";
+
 export interface ChatWindowProps {
-	author: {
-		name: string
-		avatar?: string
-	}
 	messages: Array<ChatMessage>
+	chat: ChatData
 }
 
 export interface ChatMessage {

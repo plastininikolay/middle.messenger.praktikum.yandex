@@ -3,13 +3,13 @@ import render from "./render";
 
 class Route {
 	private _pathname: string;
-	private _blockClass: new () => Block;
+	private _blockClass: new (props?: Record<string, any>) => Block;
 	private _block: Block | null;
 	private _props: { rootQuery: string };
 
 	constructor(
 		pathname: string,
-		view: new () => Block,
+		view: new (props?: Record<string, any>) => Block,
 		props: { rootQuery: string },
 	) {
 		this._pathname = pathname;
@@ -27,7 +27,8 @@ class Route {
 
 	leave(): void {
 		if (this._block) {
-			this._block.hide();
+			this._block.destroy();
+			this._block = null;
 		}
 	}
 
@@ -37,7 +38,7 @@ class Route {
 
 	render(): void {
 		if (!this._block) {
-			this._block = new this._blockClass();
+			this._block = new this._blockClass({});
 			render(this._props.rootQuery, this._block);
 			return;
 		}

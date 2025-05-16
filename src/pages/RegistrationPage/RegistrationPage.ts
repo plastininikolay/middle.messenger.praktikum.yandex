@@ -2,14 +2,17 @@ import { FormGroup } from "../../components/FormGroup/FormGroup";
 import Block from "../../utils/block";
 import { Button } from "../../components/Button/Button";
 import { ButtonVariantEnum } from "../../components/Button/types";
-import { PAGE_NAMES } from "../../App";
+import { AppState, PAGE_NAMES } from "../../types";
 import { getFormData } from "../../utils/logForm";
 import { TYPES_VALIDATION } from "../../types";
 import { validateInput } from "../../utils/validation";
 import { FormGroupProps } from "../../components/FormGroup/types";
+import Router from "../../utils/router";
+import userAuthController from "../../controllers/user-login";
+import connect from "../../utils/connect";
 
-export class RegistrationPage extends Block {
-	constructor() {
+class RegistrationPageBase extends Block {
+	constructor(props: Record<string, any>) {
 		const FormFirstName = new FormGroup({
 			type: "text",
 			name: "first_name",
@@ -130,10 +133,20 @@ export class RegistrationPage extends Block {
 			FormPassword.validate();
 			FormConfirmPassword.validate();
 		};
-		const onClickButton = () => {
+		const onClickButton = async () => {
 			validateAll();
-			console.log(
-				getFormData([
+
+			// Проверяем валидность всех форм перед отправкой
+			if (
+				FormFirstName.isValid() &&
+				FormSecondName.isValid() &&
+				FormLogin.isValid() &&
+				FormEmail.isValid() &&
+				FormPhone.isValid() &&
+				FormPassword.isValid() &&
+				FormConfirmPassword.isValid()
+			) {
+				const formData = getFormData([
 					FormFirstName,
 					FormSecondName,
 					FormLogin,
@@ -141,10 +154,34 @@ export class RegistrationPage extends Block {
 					FormPhone,
 					FormPassword,
 					FormConfirmPassword,
-				]),
-			);
+				]) as Record<string, string>;
+
+				// Проверяем совпадение паролей
+				if (formData.password !== formData["confirm-password"]) {
+					// Устанавливаем ошибку для поля подтверждения пароля
+					FormConfirmPassword.setProps({
+						validationMessage: "Пароли не совпадают",
+					});
+					return;
+				}
+
+				await userAuthController.signup({
+					first_name: formData.first_name,
+					second_name: formData.second_name,
+					login: formData.login,
+					email: formData.email,
+					password: formData.password,
+					phone: formData.phone,
+				});
+			}
 		};
+
+		const onLoginClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.authentication}`);
+		};
+
 		super({
+			...props,
 			FormFirstName,
 			FormSecondName,
 			FormLogin,
@@ -153,7 +190,6 @@ export class RegistrationPage extends Block {
 			FormPassword,
 			FormConfirmPassword,
 			ButtonRegister: new Button({
-				url: PAGE_NAMES.chats,
 				label: "Зарегистрироваться",
 				variant: ButtonVariantEnum.PRIMARY,
 				events: {
@@ -165,7 +201,12 @@ export class RegistrationPage extends Block {
 				url: PAGE_NAMES.authentication,
 				label: "Войти",
 				variant: ButtonVariantEnum.SECONDARY,
+				events: {
+					click: onLoginClick,
+				},
 			}),
+			errorText: "",
+			isLoading: false,
 		});
 	}
 
@@ -186,10 +227,17 @@ export class RegistrationPage extends Block {
                         {{{ FormConfirmPassword }}}
                     </div>
                     <div class="form-button-container">
-                        {{{ ButtonRegister }}}
+                        ${this.props.requestStatus.loading ? '<div class="loader"></div>' : "{{{ ButtonRegister }}}"}
                         {{{ ButtonLogin }}}
                     </div>
+                    ${this.props.requestStatus.error ? `<div class="error-message">${this.props.requestStatus.error}</div>` : ""}
                 </form>
             </main>`;
 	}
 }
+
+const mapStateToProps = (state: AppState) => ({
+	requestStatus: state.requestStatus,
+});
+
+export const RegistrationPage = connect(mapStateToProps)(RegistrationPageBase);

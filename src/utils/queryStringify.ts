@@ -33,7 +33,7 @@ function queryStringify(data: StringIndexed): string | never {
 	}
 
 	buildQueryString(data);
-	return result.join("&"); // Объединяем все части в строку
+	return '?' + result.join("&"); // Объединяем все части в строку
 }
 
 export default queryStringify;

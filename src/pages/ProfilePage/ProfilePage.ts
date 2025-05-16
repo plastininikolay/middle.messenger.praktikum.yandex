@@ -3,45 +3,62 @@ import { InfoItem } from "../../components/InfoItem/infoItem";
 import { Button } from "../../components/Button/Button";
 import { ButtonVariantEnum } from "../../components/Button/types";
 import "../../styles/profile.scss";
-import { UserData } from "../../types";
-import { PAGE_NAMES } from "../../types";
+import { AppState, PAGE_NAMES } from "../../types";
 import { avatarUrl } from "../../mocks";
+import Router from "../../utils/router";
+import connect from "../../utils/connect";
+import UserAuthController from "../../controllers/user-login"
 
-export class ProfilePage extends Block {
-	constructor(user: UserData) {
+class ProfilePageBase extends Block {
+	constructor(props: Record<string, any>) {
+		const { user = {} } = props;
+
+		const onEditProfileClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.profileEdit}`);
+		};
+
+		const onChangePasswordClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.chagePassword}`);
+		};
+
+		const onLogoutClick = () => {
+			void UserAuthController.logout()
+		};
+		const username = `${user.first_name} ${user.second_name}`;
 		super({
+			...props,
 			avatar: user.avatar,
-			username: user.username || "Имя пользователя",
+			username: username || "-",
 			InfoItems: [
 				new InfoItem({
 					labelText: "Почта",
 					name: "email",
-					value: user.email || "user@example.com",
+					value: user.email || "-",
 				}),
 				new InfoItem({
 					labelText: "Логин",
 					name: "login",
-					value: user.login || "username123",
+					value: user.login || "-",
 				}),
 				new InfoItem({
 					labelText: "Имя",
 					name: "first_name",
-					value: user.firstName || "User",
+					value: user.first_name || "-",
 				}),
 				new InfoItem({
 					labelText: "Фамилия",
-					name: "last_name",
-					value: user.lastName || "Name",
+					name: "second_name",
+					value: user.second_name || "-",
 				}),
 				new InfoItem({
 					labelText: "Имя в чате",
-					name: "chat_name",
-					value: user.chatName || "ChatName",
+					name: "display_name",
+					value: user.display_name || "-",
 				}),
 				new InfoItem({
 					labelText: "Телефон",
 					name: "phone",
-					value: user.phone || "+7 (123) 456-78-90",
+					value: user.phone || "-",
 				}),
 			],
 			EditProfileButton: new Button({
@@ -49,12 +66,18 @@ export class ProfilePage extends Block {
 				url: PAGE_NAMES.profileEdit,
 				label: "Изменить данные",
 				variant: ButtonVariantEnum.UNDERLINE,
+				events: {
+					click: onEditProfileClick,
+				},
 			}),
 			ChangePasswordButton: new Button({
 				isLink: true,
 				url: PAGE_NAMES.chagePassword,
 				label: "Изменить пароль",
 				variant: ButtonVariantEnum.UNDERLINE,
+				events: {
+					click: onChangePasswordClick,
+				},
 			}),
 			LogoutButton: new Button({
 				isLink: true,
@@ -62,6 +85,9 @@ export class ProfilePage extends Block {
 				label: "Выйти",
 				variant: ButtonVariantEnum.UNDERLINE,
 				color: "#FF0000",
+				events: {
+					click: onLogoutClick,
+				},
 			}),
 		});
 	}
@@ -84,3 +110,9 @@ export class ProfilePage extends Block {
             </main>`;
 	}
 }
+
+const mapStateToProps = (state: Partial<AppState>) => ({
+	user: state.user,
+});
+
+export const ProfilePage = connect(mapStateToProps)(ProfilePageBase);

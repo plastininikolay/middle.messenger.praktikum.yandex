@@ -26,4 +26,8 @@ export class FormGroup extends Block {
 			props: this.props as FormGroupProps,
 		});
 	}
+	
+	isValid(): boolean {
+		return !(this.props as FormGroupProps).validationMessage;
+	}
 }

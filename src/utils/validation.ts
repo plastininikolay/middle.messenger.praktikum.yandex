@@ -18,17 +18,15 @@ export const validateInput = ({ value = "", props }: validateInputProps) => {
 	} else {
 		switch (typeOfValidation) {
 			case TYPES_VALIDATION.first_name:
-				if (!namePattern.test(value) || value[0] !== value[0].toUpperCase()) {
+				if (!namePattern.test(value)) {
 					isValid = false;
-					message =
-						"Имя должно начинаться с заглавной буквы и содержать только буквы и дефисы.";
+					message = "Имя должно содержать только буквы и дефисы.";
 				}
 				break;
 			case TYPES_VALIDATION.second_name:
-				if (!namePattern.test(value) || value[0] !== value[0].toUpperCase()) {
+				if (!namePattern.test(value)) {
 					isValid = false;
-					message =
-						"Фамилия должна начинаться с заглавной буквы и содержать только буквы и дефисы.";
+					message = "Фамилия должна содержать только буквы и дефисы.";
 				}
 				break;
 
@@ -51,22 +49,11 @@ export const validateInput = ({ value = "", props }: validateInputProps) => {
 				break;
 			}
 
-			case TYPES_VALIDATION.password: {
-				const passwordPattern = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/;
-				if (!passwordPattern.test(value)) {
-					isValid = false;
-					message =
-						"Пароль должен содержать от 8 до 40 символов, с хотя бы одной заглавной буквой и цифрой.";
-				}
-				break;
-			}
-
 			case TYPES_VALIDATION.phone: {
-				const phonePattern = /^\+?\d{10,15}$/;
+				const phonePattern = /\b\d{10,15}\b/g;
 				if (!phonePattern.test(value)) {
 					isValid = false;
-					message =
-						"Номер телефона должен содержать от 10 до 15 символов, может начинаться с плюса.";
+					message = "Номер телефона должен содержать от 10 до 15 символов.";
 				}
 				break;
 			}

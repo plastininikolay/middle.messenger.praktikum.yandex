@@ -1,3 +1,5 @@
+import {ChatsResponse, UserResponse} from "./api/types";
+
 export enum PAGE_NAMES {
 	notFound = "404",
 	serverError = "500",
@@ -30,11 +32,14 @@ export interface UserData {
 	chatName?: string;
 	phone?: string;
 }
+
 export interface ChatData {
-	author: string;
-	text: string;
-	avatar?: string;
-	unreadMessages: number;
+	avatar: string | null;
+	created_by: number;
+	id: number;
+	last_message: string | null;
+	title: string;
+	unread_count: number;
 }
 
 export interface BaseInputType {
@@ -46,8 +51,22 @@ export interface BaseInputType {
 	eventsForInput?: Record<string, (e: Event) => void>;
 }
 
+export interface ChatInputType extends BaseInputType{
+	placeholder: string;
+}
+
 export type Indexed<T = unknown> = {
 	[key in string]: T;
 };
 
 export type StringIndexed = Record<string, any>;
+
+export type AppState = {
+	requestStatus?: {
+		loading: boolean;
+		error?: string;
+	}
+	isLoggedIn: boolean;
+	user?: UserResponse;
+	chats?: ChatsResponse;
+};

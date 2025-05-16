@@ -1,29 +1,18 @@
 import { Indexed } from "../types";
 
-function cloneDeep<T extends Indexed>(obj: T) {
+function cloneDeep<T extends Indexed>(obj: T): T {
+	//@ts-expect-error невозможно правильно использовать типы
 	return (function _cloneDeep(
 		item: T,
 	): T | Date | Set<unknown> | Map<unknown, unknown> | object | T[] {
-		// Handle:
-		// * null
-		// * undefined
-		// * boolean
-		// * number
-		// * string
-		// * symbol
-		// * function
 		if (item === null || typeof item !== "object") {
 			return item;
 		}
 
-		// Handle:
-		// * Date
 		if (item instanceof Date) {
 			return new Date((item as Date).valueOf());
 		}
 
-		// Handle:
-		// * Array
 		if (item instanceof Array) {
 			const copy: ReturnType<typeof _cloneDeep>[] = [];
 
@@ -32,8 +21,6 @@ function cloneDeep<T extends Indexed>(obj: T) {
 			return copy;
 		}
 
-		// Handle:
-		// * Set
 		if (item instanceof Set) {
 			const copy = new Set();
 
@@ -42,8 +29,6 @@ function cloneDeep<T extends Indexed>(obj: T) {
 			return copy;
 		}
 
-		// Handle:
-		// * Map
 		if (item instanceof Map) {
 			const copy = new Map();
 
@@ -52,9 +37,7 @@ function cloneDeep<T extends Indexed>(obj: T) {
 			return copy;
 		}
 
-		// Handle:
-		// * Object
-		if (item instanceof Object) {
+		if (typeof item === "object") {
 			const copy: Indexed = {};
 
 			// Handle:
@@ -67,7 +50,7 @@ function cloneDeep<T extends Indexed>(obj: T) {
 			// * Object.name (other)
 			Object.keys(item).forEach((k) => (copy[k] = _cloneDeep(item[k] as T)));
 
-			return copy;
+			return copy as T;
 		}
 
 		throw new Error(`Unable to copy object: ${item}`);

@@ -29,6 +29,19 @@
     gap: 5px;
 }
 
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
 .form-title {
     margin-bottom: 40px;
 }

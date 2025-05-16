@@ -3,14 +3,17 @@ import { Button } from "../../components/Button/Button";
 import { ButtonVariantEnum } from "../../components/Button/types";
 import { FormGroup } from "../../components/FormGroup/FormGroup";
 import "../../styles/form.scss";
-import { PAGE_NAMES } from "../../types";
+import { AppState, PAGE_NAMES } from "../../types";
 import { getFormData } from "../../utils/logForm";
 import { TYPES_VALIDATION } from "../../types";
 import { validateInput } from "../../utils/validation";
 import { FormGroupProps } from "../../components/FormGroup/types";
+import Router from "../../utils/router";
+import userAuthController from "../../controllers/user-login";
+import connect from "../../utils/connect";
 
-export class AuthPage extends Block {
-	constructor() {
+class AuthPageBase extends Block {
+	constructor(props: Record<string, any>) {
 		const FormLogin = new FormGroup({
 			name: "login",
 			type: "text",
@@ -45,16 +48,35 @@ export class AuthPage extends Block {
 			FormLogin.validate();
 			FormPassword.validate();
 		};
-		const onClickButton = () => {
+		const onClickButton = async () => {
 			validateAll();
-			console.log(getFormData([FormLogin, FormPassword]));
+
+			// Проверяем валидность формы (нет ошибок валидации)
+			if (FormLogin.isValid() && FormPassword.isValid()) {
+				const formData = getFormData([FormLogin, FormPassword]) as Record<
+					string,
+					string
+				>;
+
+				// Вызываем метод login из UserAuthController
+				await userAuthController.login({
+					login: formData.login,
+					password: formData.password,
+				});
+				// Контроллер уже выполнит перенаправление при успешной авторизации
+			}
 		};
+
+		const onRegisterClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.registration}`);
+		};
+
 		super({
+			...props,
 			FormLogin,
 			FormPassword,
 			ButtonAuth: new Button({
 				isFull: false,
-				url: PAGE_NAMES.chats,
 				variant: ButtonVariantEnum.PRIMARY,
 				label: "Авторизоваться",
 				events: {
@@ -67,7 +89,12 @@ export class AuthPage extends Block {
 				url: PAGE_NAMES.registration,
 				variant: ButtonVariantEnum.SECONDARY,
 				label: "Нет аккаунта?",
+				events: {
+					click: onRegisterClick,
+				},
 			}),
+			errorText: "",
+			isLoading: false,
 		});
 	}
 
@@ -83,10 +110,17 @@ export class AuthPage extends Block {
 					   {{{ FormPassword }}}
 				   </div>
 					<div class="form-button-container">
-						{{{ ButtonAuth }}}
+						${this.props.requestStatus.loading ? '<div class="loader"></div>' : "{{{ ButtonAuth }}}"}
 						{{{ ButtonReg }}}
 					</div>
+					${this.props.requestStatus.error ? `<div class="error-message">${this.props.requestStatus.error}</div>` : ""}
 				</form>
 			</main>`;
 	}
 }
+
+const mapStateToProps = (state: Partial<AppState>) => ({
+	requestStatus: state.requestStatus,
+});
+
+export const AuthPage = connect(mapStateToProps)(AuthPageBase);

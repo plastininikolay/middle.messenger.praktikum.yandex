@@ -1,10 +1,44 @@
+import { HTTPTransport, RequestOptions } from "../utils/httpTransport";
+
 export class BaseAPI {
-	// На случай, если забудете переопределить метод и используете его, — выстрелит ошибка
-	create() { throw new Error('Not implemented'); }
+	protected http: HTTPTransport;
+	protected baseURL: string;
 
-	request() { throw new Error('Not implemented'); }
+	constructor(baseURL: string) {
+		this.http = new HTTPTransport();
+		this.baseURL = baseURL;
+	}
 
-	update() { throw new Error('Not implemented'); }
+	protected get<T>(url: string, options: RequestOptions = {}): Promise<T> {
+		return this.http
+			.get(`${this.baseURL}${url}`, options)
+			.then(this.parseResponse);
+	}
 
-	delete() { throw new Error('Not implemented'); }
+	protected post<T>(url: string, options: RequestOptions = {}): Promise<T> {
+		return this.http
+			.post(`${this.baseURL}${url}`, options)
+			.then(this.parseResponse);
+	}
+
+	protected put<T>(url: string, options: RequestOptions = {}): Promise<T> {
+		return this.http
+			.put(`${this.baseURL}${url}`, options)
+			.then(this.parseResponse);
+	}
+
+	protected delete<T>(url: string, options: RequestOptions = {}): Promise<T> {
+		return this.http
+			.delete(`${this.baseURL}${url}`, options)
+			.then(this.parseResponse);
+	}
+
+	private parseResponse(xhr: XMLHttpRequest): any {
+		try {
+			return JSON.parse(xhr.response);
+		} catch (error: unknown) {
+			console.log(error);
+			return xhr.response;
+		}
+	}
 }

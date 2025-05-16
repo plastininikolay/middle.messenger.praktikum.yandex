@@ -6,7 +6,6 @@ import "./ChatWindow.scss";
 import { avatarUrl } from "../../mocks";
 import { ChatInput } from "../ChatInput/ChatInput";
 import { BaseInputType, TYPES_VALIDATION } from "../../types";
-import { getFormData } from "../../utils/logForm";
 import { validateInput } from "../../utils/validation";
 
 export class ChatWindow extends Block {
@@ -14,6 +13,7 @@ export class ChatWindow extends Block {
 		const ChatInputComponent = new ChatInput({
 			name: "message",
 			typeOfValidation: TYPES_VALIDATION.message,
+			placeholder: "Введите сообщение...",
 			eventsForInput: {
 				blur: (e) => {
 					const element = e.currentTarget as HTMLInputElement;
@@ -29,7 +29,6 @@ export class ChatWindow extends Block {
 		};
 		const onClickButton = () => {
 			validateAll();
-			console.log(getFormData([ChatInputComponent]));
 		};
 		super({
 			...props,
@@ -59,8 +58,8 @@ export class ChatWindow extends Block {
             <div class="chat-window">
 				<div class="chat-top">
 					<div class="author">
-						<img src="${this.props.author.avatar || avatarUrl}" alt="Аватар ${this.props.author}"/>
-						<h3>${this.props.author.name}</h3>
+						<img src="${this.props.chat?.avatar || avatarUrl}" alt="Аватар ${this.props.chat?.title}"/>
+						<h3>${this.props.chat?.title}</h3>
 					</div>
 					<div class="chat-settings"></div>
 				</div>

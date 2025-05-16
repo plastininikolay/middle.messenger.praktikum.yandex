@@ -19,7 +19,10 @@ class Router {
 		return Router.__instance;
 	}
 
-	use(pathname: string, block: new () => Block): Router {
+	use(
+		pathname: string,
+		block: new (props?: Record<string, any>) => Block,
+	): Router {
 		const route = new Route(pathname, block, { rootQuery: this._rootQuery });
 		this.routes.push(route);
 		return this;
@@ -49,6 +52,7 @@ class Router {
 	}
 
 	go(pathname: string): void {
+		console.log(pathname);
 		this.history.pushState({}, "", pathname);
 		this._onRoute(pathname);
 	}

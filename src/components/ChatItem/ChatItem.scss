@@ -6,7 +6,12 @@
   display: flex;
   gap: 11px;
   font-size: 13px;
-
+  &:first-child {
+    border-top: 1px solid var(--border-color);
+  }
+  &:last-child {
+    border-bottom: none;
+  }
   img {
     width: 47px;
     height: 47px;

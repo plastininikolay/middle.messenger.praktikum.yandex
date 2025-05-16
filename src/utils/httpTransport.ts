@@ -1,14 +1,24 @@
 import queryStringify from "./queryStringify";
 
-const METHODS = {
+type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
+
+const METHODS: Record<HTTPMethod, HTTPMethod> = {
 	GET: "GET",
 	POST: "POST",
 	PUT: "PUT",
 	DELETE: "DELETE",
 };
 
+export type RequestOptions = {
+	headers?: Record<string, string>;
+	method?: HTTPMethod;
+	data?: Record<string, any> | FormData;
+	timeout?: number;
+	withCredentials?: boolean;
+};
+
 export class HTTPTransport {
-	get = (url: string, options: any) => {
+	get = (url: string, options: RequestOptions = {}) => {
 		return this.request(
 			url,
 			{ ...options, method: METHODS.GET },
@@ -16,7 +26,7 @@ export class HTTPTransport {
 		);
 	};
 
-	post = (url: string, options: any) => {
+	post = (url: string, options: RequestOptions = {}) => {
 		return this.request(
 			url,
 			{ ...options, method: METHODS.POST },
@@ -24,7 +34,7 @@ export class HTTPTransport {
 		);
 	};
 
-	put = (url: string, options: any) => {
+	put = (url: string, options: RequestOptions = {}) => {
 		return this.request(
 			url,
 			{ ...options, method: METHODS.PUT },
@@ -32,7 +42,7 @@ export class HTTPTransport {
 		);
 	};
 
-	delete = (url: string, options: any) => {
+	delete = (url: string, options: RequestOptions = {}) => {
 		return this.request(
 			url,
 			{ ...options, method: METHODS.DELETE },
@@ -40,19 +50,28 @@ export class HTTPTransport {
 		);
 	};
 
-	request = (url: string, options: any, timeout = 5000) => {
+	request = (
+		url: string,
+		options: RequestOptions,
+		timeout = 5000,
+	): Promise<XMLHttpRequest> => {
 		const { headers = {}, method, data, withCredentials = true } = options;
 
 		return new Promise(function (resolve, reject) {
 			if (!method) {
-				reject("No method");
+				reject(new Error("No method"));
 				return;
 			}
 
 			const xhr = new XMLHttpRequest();
 			const isGet = method === METHODS.GET;
 
-			xhr.open(method, isGet && !!data ? `${url}${queryStringify(data)}` : url);
+			xhr.open(
+				method,
+				isGet && !!data
+					? `${url}${queryStringify(data as Record<string, any>)}`
+					: url,
+			);
 
 			Object.keys(headers).forEach((key) => {
 				xhr.setRequestHeader(key, headers[key]);
@@ -62,19 +81,18 @@ export class HTTPTransport {
 				resolve(xhr);
 			};
 
-			xhr.onabort = reject;
-			xhr.onerror = reject;
+			xhr.onabort = () => reject(new Error("Request aborted"));
+			xhr.onerror = () => reject(new Error("Network error occurred"));
 
 			xhr.timeout = timeout;
 			xhr.withCredentials = withCredentials;
-			xhr.ontimeout = reject;
+			xhr.ontimeout = () => reject(new Error("Request timeout"));
 
 			if (isGet || !data) {
 				xhr.send();
 			} else if (data instanceof FormData) {
 				xhr.send(data);
 			} else {
-				xhr.setRequestHeader("Content-Type", "application/json");
 				xhr.send(JSON.stringify(data));
 			}
 		});

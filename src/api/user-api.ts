@@ -1,9 +1,27 @@
 import { BaseAPI } from "./base-api";
+import {ChangeUserProfileRequest, ErrorResponse, UserPasswordRequest, UserResponse} from "./types";
 
-class UserApi extends BaseAPI {
-	constructor() {}
+class UserAPI extends BaseAPI {
+	constructor() {
+		super("https://ya-praktikum.tech/api/v2/user");
+	}
 
-	methodName(args: type): returnType {
-		// Your code here
+	changeUserProfile(data: ChangeUserProfileRequest): Promise<UserResponse> {
+		return this.put<UserResponse>("/profile", {
+			data,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	}
+	changeUserPassword(data: UserPasswordRequest): Promise<void | ErrorResponse> {
+		return this.put<void | ErrorResponse>("/password", {
+			data,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 	}
 }
+
+export default new UserAPI();
