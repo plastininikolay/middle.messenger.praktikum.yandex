@@ -15,6 +15,10 @@ import Router from "../../utils/router.ts";
 
 class ChatsPageBase extends Block {
 	constructor(props: Record<string, any>) {
+		void ChatsController.getChats({
+			offset: 0,
+			limit: 10,
+		})
 		const chatInput = new ChatInput({
 			name: 'create_chat',
 			placeholder: 'Введите название нового чата',

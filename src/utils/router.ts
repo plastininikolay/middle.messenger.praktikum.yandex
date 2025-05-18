@@ -1,6 +1,7 @@
 import Route from "./route";
 import Block from "./block";
 import {PAGE_NAMES} from "../types.ts";
+import {checkAuthAndRedirect} from "./authRedirect.ts";
 
 class Router {
 	private static __instance: Router | null = null;
@@ -28,7 +29,12 @@ class Router {
 			this._onRoute(target.location.pathname);
 		};	this._onRoute(window.location.pathname);
 	}
-	private _onRoute(pathname: string): void {
+	private async _onRoute(pathname: string): Promise<void> {
+		const redirected = await checkAuthAndRedirect(pathname);
+		// Если был выполнен редирект, прерываем выполнение
+		if (redirected) {
+			return;
+		}
 		const route = this.getRoute(pathname);
 		if (!route) {
 			// Если маршрут не найден, перенаправляем на страницу 404
@@ -46,14 +52,18 @@ class Router {
 			this._currentRoute.leave();
 		}	this._currentRoute = route;
 		route.render();
-	}go(pathname: string): void {
+	}
+	go(pathname: string): void {
 		this.history.pushState({}, "", pathname);
-		this._onRoute(pathname);
-	}back(): void {
+		void this._onRoute(pathname);
+	}
+	back(): void {
 		this.history.back();
-	}forward(): void {
+	}
+	forward(): void {
 		this.history.forward();
-	}getRoute(pathname: string): Route | undefined {
+	}
+	getRoute(pathname: string): Route | undefined {
 		return this.routes.find((route) => route.match(pathname));
 	}
 }

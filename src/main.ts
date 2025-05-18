@@ -11,26 +11,12 @@ import {PAGE_NAMES} from "./types";
 import "./styles/index.scss";
 import store from "./utils/store";
 import {StoreEvents} from "./utils/store";
-import UserAuthController from "./controllers/user-login";
-import ChatsController from "./controllers/chats.ts";
 
-// Инициализируем систему с подпиской на события
 store.on(StoreEvents.Updated, () => {
 	console.log("Store updated, new state:", store.getState());
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-	if (!store.getState().user &&
-		window.location.pathname !== `/${PAGE_NAMES.authentication}` &&
-		window.location.pathname !== `/${PAGE_NAMES.registration}`) {
-		await UserAuthController.checkAuth();
-	}
-	if (store.getState().user && window.location.pathname === `/${PAGE_NAMES.chats}`) {
-		void ChatsController.getChats({
-			offset: 0,
-			limit: 10,
-		})
-	}
 	const router = Router.getInstance("#app");router
 		.use(`/${PAGE_NAMES.authentication}`, AuthPage)
 		.use(`/${PAGE_NAMES.registration}`, RegistrationPage)

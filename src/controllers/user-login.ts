@@ -68,13 +68,14 @@ class UserAuthController {
 				throw new Error(user.reason)
 			}
 			store.set("user", user);
-			store.set("isLoggedIn", true);		return true;
+			store.set("isLoggedIn", true);
+			return true;
 		} catch (error) {
 			console.log(error);
 			store.set("user", null);
 			store.set("isLoggedIn", false);
 			store.set("requestStatus.loading", false);
-			Router.getInstance("#app").go(`/${PAGE_NAMES.authentication}`);		return false;
+			return false;
 		} finally {
 			store.set("requestStatus.loading", false);
 		}
