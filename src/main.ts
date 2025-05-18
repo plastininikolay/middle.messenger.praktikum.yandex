@@ -1,17 +1,18 @@
 import Router from "./utils/router";
-import { AuthPage } from "./pages/AuthPage/AuthPage";
-import { RegistrationPage } from "./pages/RegistrationPage/RegistrationPage";
-import { ChatsPage } from "./pages/ChatsPage/ChatsPage";
-import { ProfilePage } from "./pages/ProfilePage/ProfilePage";
-import { ProfileEditPage } from "./pages/ProfileEditPage/ProfileEditPage";
-import { ChangePasswordPage } from "./pages/ChangePassword/ChangePassword";
-import { NotFoundPage } from "./pages/NotFoundPage/NotFoundPage";
-import { ErrorPage } from "./pages/ErrorPage/ErrorPage";
-import { PAGE_NAMES } from "./types";
+import {AuthPage} from "./pages/AuthPage/AuthPage";
+import {RegistrationPage} from "./pages/RegistrationPage/RegistrationPage";
+import {ChatsPage} from "./pages/ChatsPage/ChatsPage";
+import {ProfilePage} from "./pages/ProfilePage/ProfilePage";
+import {ProfileEditPage} from "./pages/ProfileEditPage/ProfileEditPage";
+import {ChangePasswordPage} from "./pages/ChangePassword/ChangePassword";
+import {NotFoundPage} from "./pages/NotFoundPage/NotFoundPage";
+import {ErrorPage} from "./pages/ErrorPage/ErrorPage";
+import {PAGE_NAMES} from "./types";
 import "./styles/index.scss";
 import store from "./utils/store";
-import { StoreEvents } from "./utils/store";
+import {StoreEvents} from "./utils/store";
 import UserAuthController from "./controllers/user-login";
+import ChatsController from "./controllers/chats.ts";
 
 // Инициализируем систему с подпиской на события
 store.on(StoreEvents.Updated, () => {
@@ -19,10 +20,17 @@ store.on(StoreEvents.Updated, () => {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-	if (!store.getState().user) {
+	if (!store.getState().user &&
+		window.location.pathname !== `/${PAGE_NAMES.authentication}` &&
+		window.location.pathname !== `/${PAGE_NAMES.registration}`) {
 		await UserAuthController.checkAuth();
 	}
-
+	if (store.getState().user && window.location.pathname === `/${PAGE_NAMES.chats}`) {
+		void ChatsController.getChats({
+			offset: 0,
+			limit: 10,
+		})
+	}
 	const router = Router.getInstance("#app");
 
 	router

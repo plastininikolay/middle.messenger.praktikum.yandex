@@ -22,6 +22,11 @@ class UserAPI extends BaseAPI {
 			},
 		});
 	}
+	changeUserAvatar(formData: FormData): Promise<UserResponse> {
+		return this.put<UserResponse>("/profile/avatar", {
+			data: formData,
+		});
+	}
 }
 
 export default new UserAPI();

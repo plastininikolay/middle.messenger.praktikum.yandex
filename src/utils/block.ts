@@ -10,6 +10,7 @@ export default class Block {
 		INIT: "init",
 		FLOW_CDM: "flow:component-did-mount",
 		FLOW_CDU: "flow:component-did-update",
+		FLOW_CWU: "flow:component-will-unmount",
 		FLOW_RENDER: "flow:render",
 	};
 
@@ -94,6 +95,10 @@ export default class Block {
 			Block.EVENTS.FLOW_RENDER,
 			this._render.bind(this) as EventCallback,
 		);
+		eventBus.on(
+			Block.EVENTS.FLOW_CWU,
+			this._componentWillUnmount.bind(this) as EventCallback,
+		);
 	}
 
 	protected init(): void {
@@ -117,18 +122,42 @@ export default class Block {
 	}
 
 	private _componentDidUpdate(): void {
-		this._removeEvents();
 		const response = this.componentDidUpdate();
 		if (!response) {
 			return;
 		}
+
+		this._removeEvents();
+
 		this._render();
 	}
 
 	protected componentDidUpdate(): boolean {
 		return true;
 	}
+	protected componentWillUnmount(): void {}
 
+// Внутренний метод для вызова componentWillUnmount
+	private _componentWillUnmount(): void {
+		this.componentWillUnmount();
+
+		// Вызываем componentWillUnmount для всех дочерних компонентов
+		Object.values(this.children).forEach((child) => {
+			child.dispatchComponentWillUnmount();
+		});
+
+		// Вызываем componentWillUnmount для всех компонентов в списках
+		Object.values(this.lists).forEach((list) => {
+			list.forEach((item) => {
+				if (item instanceof Block) {
+					item.dispatchComponentWillUnmount();
+				}
+			});
+		});
+	}
+	public dispatchComponentWillUnmount(): void {
+		this.eventBus().emit(Block.EVENTS.FLOW_CWU);
+	}
 	private _getChildrenPropsAndProps(propsAndChildren: BlockProps): {
 		children: Record<string, Block>;
 		props: BlockProps;
@@ -176,7 +205,31 @@ export default class Block {
 			return;
 		}
 
-		Object.assign(this.props, nextProps);
+		const { props, children, lists } = this._getChildrenPropsAndProps(nextProps);
+
+		Object.entries(children).forEach(([key, child]) => {
+			if (this.children[key]) {
+				this.children[key].setProps(child.getProps());
+			} else {
+				this.children[key] = child;
+			}
+		});
+
+		Object.entries(lists).forEach(([key, list]) => {
+			this.lists[key] = list;
+		});
+
+		Object.assign(this.props, props);
+	};
+
+	public setChild = (key: string, component: Block): void => {
+		if (this.children[key]) {
+			this.children[key].destroy();
+		}
+
+		this.children[key] = component;
+
+		this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
 	};
 
 	public setLists = (nextList: Record<string, any[]>): void => {
@@ -190,6 +243,7 @@ export default class Block {
 	get element(): HTMLElement | null {
 		return this._element;
 	}
+
 
 	private _render(): void {
 		console.log("Render");
@@ -245,7 +299,11 @@ export default class Block {
 
 	public getContent(): HTMLElement {
 		if (!this._element) {
-			throw new Error("Element is not created");
+			this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+
+			if (!this._element) {
+				throw new Error("Element is not created");
+			}
 		}
 		return this._element;
 	}
@@ -290,6 +348,9 @@ export default class Block {
 	}
 
 	public destroy(): void {
+		// Сначала вызываем componentWillUnmount для текущего компонента и всех дочерних
+		this.dispatchComponentWillUnmount();
+
 		this._removeEvents();
 
 		// Рекурсивно уничтожаем все дочерние компоненты

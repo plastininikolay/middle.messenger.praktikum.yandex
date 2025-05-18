@@ -1,12 +1,15 @@
 import {ChatData} from "../../types.ts";
+import {UserResponse} from "../../api/types.ts";
 
 export interface ChatWindowProps {
 	messages: Array<ChatMessage>
-	chat: ChatData
+	chat: ChatData,
+	user: UserResponse
 }
 
 export interface ChatMessage {
-	sender: boolean,
-	text: string,
+	user_id: number,
+	chat_id: number,
+	content: string,
 	time: string
 }

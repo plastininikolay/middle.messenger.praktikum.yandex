@@ -18,6 +18,12 @@
   border-radius: 7px;
   font-size: 13px;
 }
+.button.delete {
+  background-color: var(--accent-color);
+  color: var(--white-color);
+  border-radius: 7px;
+  font-size: 13px;
+}
 
 .button.secondary {
   background-color: var(--white-color);

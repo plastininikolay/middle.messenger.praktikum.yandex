@@ -9,10 +9,10 @@ export class ChatInput extends Block {
 	}
 
 	render(): string {
-		const { validationMessage, value, name, placeholder } = this.props as ChatInputType;
+		const { validationMessage, value, name, placeholder, isErrorBottom } = this.props as ChatInputType;
 
 		return `<div class="input ${validationMessage ? 'error-input' : ''}">
-				${validationMessage ? `<div class="error-message">${validationMessage}</div>` : ""}
+				${validationMessage ? `<div class="error-message ${isErrorBottom ? 'bottom' : ''}">${validationMessage}</div>` : ""}
 				<input type="text" name='${name}' placeholder="${placeholder}" value="${value || ""}"/>
 		</div>`;
 	}

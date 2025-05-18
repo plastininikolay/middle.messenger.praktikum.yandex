@@ -7,7 +7,11 @@ export enum StoreEvents {
 }
 
 class Store extends EventBus {
-	private state: AppState = {};
+	private state: AppState = {
+		requestStatus: {
+			loading: false
+		}
+	};
 
 	constructor() {
 		super();
@@ -18,6 +22,7 @@ class Store extends EventBus {
 	}
 
 	public set(path: string, value: unknown) {
+
 		this.state = set(this.state, path, value);
 		this.emit(StoreEvents.Updated);
 	}

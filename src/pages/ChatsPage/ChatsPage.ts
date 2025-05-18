@@ -1,15 +1,17 @@
-import Block from "../../utils/block";
+import Block, {BlockProps} from "../../utils/block";
 import {ChatItem} from "../../components/ChatItem/ChatItem";
 import {ChatWindow} from "../../components/ChatWindow/ChatWindow";
 import "../../styles/chats.scss";
-import {AppState, BaseInputType, ChatData} from "../../types";
-import {mockMessages} from "../../mocks";
+import {AppState, BaseInputType, ChatData, PAGE_NAMES} from "../../types";
 import connect from "../../utils/connect";
 import ChatsController from '../../controllers/chats';
 import {Button} from "../../components/Button/Button.ts";
 import {ButtonVariantEnum} from "../../components/Button/types.ts";
 import {ChatInput} from "../../components/ChatInput/ChatInput.ts";
 import {validateInput} from "../../utils/validation.ts";
+import Router from "../../utils/router.ts";
+
+
 
 class ChatsPageBase extends Block {
 	constructor(props: Record<string, any>) {
@@ -27,24 +29,9 @@ class ChatsPageBase extends Block {
 				},
 			},
 		})
-		void ChatsController.getChats({
-			offset: 0,
-			limit: 10,
-		})
-		const onChangeActiveChat = (chat: ChatData) => {
-			this.setProps({activeChatId: chat.id});
+		const onClickToProfileButton = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.profile}`);
 		}
-		const ChatList = props.chats?.map(
-			(chat: ChatData, index: number) =>
-				new ChatItem({
-					chat: this.props.chats[index],
-					isActive: chat.id === props.activeChatId,
-					events: {
-						click: () => onChangeActiveChat(chat)
-					}
-				}),
-		);
-
 		const onClickCreateChat = async () => {
 			const inputVal = chatInput.getProps().value
 			await ChatsController.createChat({title: inputVal})
@@ -53,13 +40,9 @@ class ChatsPageBase extends Block {
 				limit: 10,
 			})
 		}
+
 		super({
 			...props,
-			ChatList: ChatList,
-			ChatWindow: new ChatWindow({
-				messages: mockMessages,
-				chat: props.chats?.find((chat: ChatData) => chat.id === props.activeChatId)
-			}),
 			CreateChatInput: chatInput,
 			CreateChatButton: new Button({
 				isFull: false,
@@ -68,15 +51,54 @@ class ChatsPageBase extends Block {
 				events: {
 					click: onClickCreateChat
 				},
-			})
+			}),
+			ToSettingsButton: new Button({
+				label: "Профиль",
+				variant: ButtonVariantEnum.SECONDARY,
+				events: {
+					click: onClickToProfileButton,
+				},
+			}),
 		});
 	}
 
+	override componentDidUpdate() {
+		const ChatWindowComponent = new ChatWindow({
+			chat: this.props.chats?.find((chat: ChatData) => chat.id === this.props.activeChatId)
+		})
+		const onChangeActiveChat = async (chat: ChatData, setProps:(nextProps: BlockProps) => void) => {
+			setProps({activeChatId: chat.id});
+			try {
+				await ChatsController.connectToChat(chat.id)
+			} catch (error) {
+				console.error('Ошибка при подключении к чату:', error);
+			}
+		}
+		const ChatList = this.props.chats?.map(
+			(chat: ChatData,) =>
+				new ChatItem({
+					chat: chat,
+					isActive: chat.id === this.props.activeChatId,
+					events: {
+						click: () => onChangeActiveChat(chat, this.setProps)
+					}
+				}),
+		);
+		this.lists = {...this.lists, ChatList}
+		this.children = {...this.children, ChatWindowComponent}
+		return true
+	}
+	override componentWillUnmount() {
+		ChatsController.closeConnection();
+	}
 	override render(): string {
 		return `
             <main class="chats-container">
                 <div class="chat-list">
-                    <h2>Список чатов</h2>
+                    <div class="up-block">
+                    	<h4>Список чатов</h4>
+                    	{{{ ToSettingsButton }}}
+					</div>
                     <div class="chat-items">
                         ${this.props.requestStatus.loading || !this.props.chats ?
 			'<div class="loader"></div>' :
@@ -90,7 +112,7 @@ class ChatsPageBase extends Block {
                 </div>
                    ${this.props.requestStatus.loading || !this.props.chats ?
 			'<div class="chat-loader"></div>' :
-			"{{{ ChatWindow }}}"}
+			"{{{ ChatWindowComponent }}}"}
             </main>
         `;
 	}

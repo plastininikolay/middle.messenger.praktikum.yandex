@@ -1,12 +1,13 @@
 import Route from "./route";
 import Block from "./block";
+import {PAGE_NAMES} from "../types.ts";
 
 class Router {
 	private static __instance: Router | null = null;
 	private routes: Route[] = [];
 	private history: History = window.history;
 	private _currentRoute: Route | null = null;
-	private _rootQuery: string;
+	private readonly _rootQuery: string;
 
 	private constructor(rootQuery: string) {
 		this._rootQuery = rootQuery;
@@ -40,9 +41,21 @@ class Router {
 	private _onRoute(pathname: string): void {
 		const route = this.getRoute(pathname);
 		if (!route) {
+			// Если маршрут не найден, перенаправляем на страницу 404
+			const notFoundRoute = this.getRoute(`/${PAGE_NAMES.notFound}`);
+			if (notFoundRoute) {
+				this._setCurrentRoute(notFoundRoute);
+			}
 			return;
 		}
 
+		this._setCurrentRoute(route);
+	}
+
+	// Выделяем логику установки текущего маршрута в отдельный метод
+	private _setCurrentRoute(route: Route): void {
+		// Если есть текущий маршрут и он отличается от нового,
+		// вызываем leave() для корректного уничтожения компонентов
 		if (this._currentRoute && this._currentRoute !== route) {
 			this._currentRoute.leave();
 		}
@@ -52,7 +65,6 @@ class Router {
 	}
 
 	go(pathname: string): void {
-		console.log(pathname);
 		this.history.pushState({}, "", pathname);
 		this._onRoute(pathname);
 	}
@@ -69,4 +81,5 @@ class Router {
 		return this.routes.find((route) => route.match(pathname));
 	}
 }
+
 export default Router;

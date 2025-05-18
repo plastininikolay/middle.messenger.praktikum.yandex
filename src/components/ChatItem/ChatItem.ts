@@ -16,7 +16,7 @@ export class ChatItem extends Block {
             <img src="${chat.avatar || avatarUrl}" alt="Аватар ${chat.title}"/>
             	<div class="chat-info">
             		<div class="author">${chat.title}</div>
-            		<div class="text">${chat.last_message}</div>
+            		<div class="text">${chat.last_message?.content ?? ''}</div>
             		<div class="unread-messages ${!chat.unread_count ? "hidden" : ""}">${chat.unread_count}</div>
 				</div>
 

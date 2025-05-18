@@ -19,6 +19,16 @@ class ChangePasswordPageBase extends Block {
 			labelText: "Старый пароль",
 			name: "password",
 			value: "",
+			edit: true,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.OldPassword.getProps() as InfoItemProps,
+					});
+				}
+			}
 		});
 		const NewPassword = new InfoItem({
 			labelText: "Новый пароль",
@@ -64,16 +74,13 @@ class ChangePasswordPageBase extends Block {
 				string,
 				string
 			>;
-			// Проверяем, что пароли совпадают
 			if (formData.new_password === formData.check_new_password) {
-				// Обновляем пароль в Store
 				await UserController.changeUserPassword({
-					oldPassword: formData.oldPassword,
-					newPassword: formData.newPassword
+					oldPassword: formData.password,
+					newPassword: formData.new_password
 				})
 			} else {
 				console.error("Пароли не совпадают");
-				// Здесь можно добавить визуальное уведомление пользователя о несовпадении паролей
 			}
 		};
 

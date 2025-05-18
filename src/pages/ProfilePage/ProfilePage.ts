@@ -4,10 +4,10 @@ import { Button } from "../../components/Button/Button";
 import { ButtonVariantEnum } from "../../components/Button/types";
 import "../../styles/profile.scss";
 import { AppState, PAGE_NAMES } from "../../types";
-import { avatarUrl } from "../../mocks";
 import Router from "../../utils/router";
 import connect from "../../utils/connect";
 import UserAuthController from "../../controllers/user-login"
+import {Avatar} from "../../components/Avatar/Avatar.ts";
 
 class ProfilePageBase extends Block {
 	constructor(props: Record<string, any>) {
@@ -27,7 +27,12 @@ class ProfilePageBase extends Block {
 		const username = `${user.first_name} ${user.second_name}`;
 		super({
 			...props,
-			avatar: user.avatar,
+			UserAvatar: new Avatar({
+				avatarUrl: user.avatar || '',
+				alt: username,
+				size: 'large',
+				editable: true
+			}),
 			username: username || "-",
 			InfoItems: [
 				new InfoItem({
@@ -91,12 +96,20 @@ class ProfilePageBase extends Block {
 			}),
 		});
 	}
+	override componentDidUpdate(): boolean {
+		if (this.children.UserAvatar && this.props.user?.avatar) {
+			this.children.UserAvatar.setProps({
+				avatarUrl: this.props.user.avatar
+			});
+		}
 
+		return true;
+	}
 	override render() {
 		return `
             <main class="profile-container">
                 <div class="profile-header">
-                    <img src="${this.props.avatar || avatarUrl}" alt="Аватар пользователя" class="avatar">
+                     {{{ UserAvatar }}}
                     <h1 class="username">${this.props.username}</h1>
                 </div>
                 <div class="profile-info">

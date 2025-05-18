@@ -43,8 +43,16 @@ class Route {
 			return;
 		}
 
-		this._block.show();
+		// Проверяем, что элемент блока существует перед показом
+		if (this._block.element) {
+			this._block.show();
+		} else {
+			// Если элемент не существует, пересоздаем блок
+			this._block = new this._blockClass({});
+			render(this._props.rootQuery, this._block);
+		}
 	}
 }
+
 
 export default Route;

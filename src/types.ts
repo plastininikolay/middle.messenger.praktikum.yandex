@@ -1,4 +1,5 @@
 import {ChatsResponse, UserResponse} from "./api/types";
+import {ChatMessage} from "./components/ChatWindow/types.ts";
 
 export enum PAGE_NAMES {
 	notFound = "404",
@@ -37,7 +38,18 @@ export interface ChatData {
 	avatar: string | null;
 	created_by: number;
 	id: number;
-	last_message: string | null;
+	last_message: {
+		"user": {
+			"first_name": string,
+			"second_name": string,
+			"display_name": string,
+			"login": string,
+			"avatar": null
+		},
+		"time": string,
+		"content": string,
+		"id": number
+	} | null;
 	title: string;
 	unread_count: number;
 }
@@ -51,8 +63,9 @@ export interface BaseInputType {
 	eventsForInput?: Record<string, (e: Event) => void>;
 }
 
-export interface ChatInputType extends BaseInputType{
+export interface ChatInputType extends BaseInputType {
 	placeholder: string;
+	isErrorBottom?: boolean;
 }
 
 export type Indexed<T = unknown> = {
@@ -66,7 +79,8 @@ export type AppState = {
 		loading: boolean;
 		error?: string;
 	}
-	isLoggedIn: boolean;
+	isLoggedIn?: boolean;
 	user?: UserResponse;
 	chats?: ChatsResponse;
+	messages?: ChatMessage[]
 };

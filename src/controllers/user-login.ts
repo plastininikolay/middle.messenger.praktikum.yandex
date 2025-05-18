@@ -95,6 +95,9 @@ class UserAuthController {
 			store.set("requestStatus.loading", true);
 
 			const user = await authAPI.getUser();
+			if (user.reason) {
+				throw new Error(user.reason)
+			}
 			store.set("user", user);
 			store.set("isLoggedIn", true);
 

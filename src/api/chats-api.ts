@@ -1,9 +1,5 @@
-import { BaseAPI } from "./base-api";
-import {
-	ChatsRequest,
-	ChatsResponse, CreateChatRequest, CreateChatResponse,
-	ErrorResponse, GetTokenRequest,
-} from "./types";
+import {BaseAPI} from "./base-api";
+import {ChatsRequest, ChatsResponse, CreateChatRequest, CreateChatResponse, ErrorResponse,} from "./types";
 
 class ChatsAPI extends BaseAPI {
 	constructor() {
@@ -27,8 +23,27 @@ class ChatsAPI extends BaseAPI {
 			},
 		});
 	}
-	getToken(data: GetTokenRequest) : Promise<{token: string}> {
-		return this.get(`/${data.id}`)
+	addUserToChat(userId: number, chatId: number): Promise<void | ErrorResponse> {
+		return this.put<void | ErrorResponse>('/users', {
+			data: {
+				users: [userId],
+				chatId: chatId
+			},
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	}
+	removeUserFromChat(userId: number, chatId: number): Promise<void | ErrorResponse> {
+		return this.delete<void | ErrorResponse>('/users', {
+			data: {
+				users: [userId],
+				chatId: chatId
+			},
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 	}
 }
 

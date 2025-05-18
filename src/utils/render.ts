@@ -4,6 +4,7 @@ function render(query: string, block: Block): Element | null {
 	const root = document.querySelector(query);
 	if (root instanceof HTMLElement) {
 		root.innerHTML = '';
+		console.log()
 		root.appendChild(block.getContent());
 		return root;
 	}
