@@ -5,16 +5,11 @@ import "./Button.scss";
 export class Button extends Block {
 	constructor(props: ButtonProps) {
 		super(props);
-	}
-
-	render(): string {
+	}render(): string {
 		const { label, variant, isFull, isLink, url, color, isDisabled } = this
-			.props as ButtonProps;
-
-		const buttonClass =
+			.props as ButtonProps;	const buttonClass =
 			`button ${variant} ${isFull ? "full" : ""} ${isDisabled ? "disabled" : ""}`.trim();
 		const colorStyle = color ? `color: ${color}` : "";
-		
 		return `<button 
 			class="${buttonClass}" 
 			style="${colorStyle}"

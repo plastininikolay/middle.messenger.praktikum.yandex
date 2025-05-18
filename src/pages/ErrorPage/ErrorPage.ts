@@ -9,9 +9,7 @@ export class ErrorPage extends Block {
 	constructor() {
 		const onChatClick = () => {
 			Router.getInstance("#app").go(`/${PAGE_NAMES.chats}`);
-		};
-
-		super({
+		};	super({
 			Button: new Button({
 				isFull: false,
 				isLink: true,

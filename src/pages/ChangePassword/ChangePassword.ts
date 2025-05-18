@@ -13,9 +13,7 @@ import UserController from "../../controllers/user"
 
 class ChangePasswordPageBase extends Block {
 	constructor(props: Record<string, any>) {
-		const { user = {} } = props;
-
-		const OldPassword = new InfoItem({
+		const { user = {} } = props;	const OldPassword = new InfoItem({
 			labelText: "Старый пароль",
 			name: "password",
 			value: "",
@@ -61,14 +59,10 @@ class ChangePasswordPageBase extends Block {
 					});
 				},
 			},
-		});
-
-		const validateAll = () => {
+		});	const validateAll = () => {
 			NewPassword.validate();
 			CheckNewPassword.validate();
-		};
-
-		const onClickButton = async () => {
+		};	const onClickButton = async () => {
 			validateAll();
 			const formData = getFormData([NewPassword, CheckNewPassword, OldPassword]) as Record<
 				string,
@@ -82,9 +76,7 @@ class ChangePasswordPageBase extends Block {
 			} else {
 				console.error("Пароли не совпадают");
 			}
-		};
-
-		super({
+		};	super({
 			...props,
 			avatar: user.avatar,
 			username: user.username || "User",
@@ -102,7 +94,6 @@ class ChangePasswordPageBase extends Block {
 			}),
 		});
 	}
-
 	override render() {
 		return `
             <main class="profile-container">

@@ -27,19 +27,13 @@ export class ChatWindowBase extends Block {
 		});
 		const onClickSendButton = () => {
 			if (ChatInputComponent.validate()) {
-				const messageText = ChatInputComponent.getProps().value;
-
-				if (messageText && messageText.trim()) {
+				const messageText = ChatInputComponent.getProps().value;			if (messageText && messageText.trim()) {
 					// Отправляем сообщение через контроллер
-					ChatsController.sendMessage(messageText);
-
-					// Очищаем поле ввода после отправки
+					ChatsController.sendMessage(messageText);				// Очищаем поле ввода после отправки
 					ChatInputComponent.setProps({value: ""});
 				}
 			}
-		};
-
-		super({
+		};	super({
 			...props,
 			SendButton: new Button({
 				label: "Отправить",
@@ -51,7 +45,6 @@ export class ChatWindowBase extends Block {
 			ChatInput: ChatInputComponent,
 		});
 	}
-
 	override componentDidUpdate(): boolean {
 		const UserIdInputComponent = new ChatInput({
 			name: "user_id",
@@ -124,7 +117,6 @@ export class ChatWindowBase extends Block {
 		}
 		return true;
 	}
-
 	override render(): string {
 		const formatTime = (timeStr: string) => {
 			try {

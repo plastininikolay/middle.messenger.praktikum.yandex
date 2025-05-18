@@ -31,9 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			limit: 10,
 		})
 	}
-	const router = Router.getInstance("#app");
-
-	router
+	const router = Router.getInstance("#app");router
 		.use(`/${PAGE_NAMES.authentication}`, AuthPage)
 		.use(`/${PAGE_NAMES.registration}`, RegistrationPage)
 		.use(`/${PAGE_NAMES.chats}`, ChatsPage)
@@ -42,7 +40,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 		.use(`/${PAGE_NAMES.chagePassword}`, ChangePasswordPage)
 		.use(`/${PAGE_NAMES.notFound}`, NotFoundPage)
 		.use(`/${PAGE_NAMES.serverError}`, ErrorPage)
-		.use("/", AuthPage);
-
-	router.start();
+		.use("/", AuthPage);router.start();
 });

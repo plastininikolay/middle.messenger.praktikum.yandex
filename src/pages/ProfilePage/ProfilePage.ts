@@ -11,17 +11,11 @@ import {Avatar} from "../../components/Avatar/Avatar.ts";
 
 class ProfilePageBase extends Block {
 	constructor(props: Record<string, any>) {
-		const { user = {} } = props;
-
-		const onEditProfileClick = () => {
+		const { user = {} } = props;	const onEditProfileClick = () => {
 			Router.getInstance("#app").go(`/${PAGE_NAMES.profileEdit}`);
-		};
-
-		const onChangePasswordClick = () => {
+		};	const onChangePasswordClick = () => {
 			Router.getInstance("#app").go(`/${PAGE_NAMES.chagePassword}`);
-		};
-
-		const onLogoutClick = () => {
+		};	const onLogoutClick = () => {
 			void UserAuthController.logout()
 		};
 		const username = `${user.first_name} ${user.second_name}`;
@@ -101,9 +95,7 @@ class ProfilePageBase extends Block {
 			this.children.UserAvatar.setProps({
 				avatarUrl: this.props.user.avatar
 			});
-		}
-
-		return true;
+		}	return true;
 	}
 	override render() {
 		return `

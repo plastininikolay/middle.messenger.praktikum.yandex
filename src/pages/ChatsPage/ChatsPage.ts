@@ -40,7 +40,6 @@ class ChatsPageBase extends Block {
 				limit: 10,
 			})
 		}
-
 		super({
 			...props,
 			CreateChatInput: chatInput,
@@ -61,7 +60,6 @@ class ChatsPageBase extends Block {
 			}),
 		});
 	}
-
 	override componentDidUpdate() {
 		const ChatWindowComponent = new ChatWindow({
 			chat: this.props.chats?.find((chat: ChatData) => chat.id === this.props.activeChatId)

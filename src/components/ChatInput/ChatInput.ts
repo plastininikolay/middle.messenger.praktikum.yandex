@@ -6,20 +6,14 @@ import {BaseInputType, ChatInputType} from "../../types";
 export class ChatInput extends Block {
 	constructor(props: ChatInputType) {
 		super(props);
-	}
-
-	render(): string {
-		const { validationMessage, value, name, placeholder, isErrorBottom } = this.props as ChatInputType;
-
-		return `<div class="input ${validationMessage ? 'error-input' : ''}">
+	}render(): string {
+		const { validationMessage, value, name, placeholder, isErrorBottom } = this.props as ChatInputType;	return `<div class="input ${validationMessage ? 'error-input' : ''}">
 				${validationMessage ? `<div class="error-message ${isErrorBottom ? 'bottom' : ''}">${validationMessage}</div>` : ""}
 				<input type="text" name='${name}' placeholder="${placeholder}" value="${value || ""}"/>
 		</div>`;
 	}
 	validate(): boolean {
-		const inputElement = this._element?.querySelector("input");
-
-		return validateInput({
+		const inputElement = this._element?.querySelector("input");	return validateInput({
 			value: inputElement?.value,
 			props: this.props as BaseInputType,
 		});

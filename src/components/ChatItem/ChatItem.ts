@@ -7,7 +7,6 @@ export class ChatItem extends Block {
 	constructor(props: ChatItemProps) {
 		super(props);
 	}
-
 	override render(): string {
 		const { chat, isActive } = this.props as ChatItemProps;
 		const activeClass = isActive ? "active" : "";
@@ -18,9 +17,7 @@ export class ChatItem extends Block {
             		<div class="author">${chat.title}</div>
             		<div class="text">${chat.last_message?.content ?? ''}</div>
             		<div class="unread-messages ${!chat.unread_count ? "hidden" : ""}">${chat.unread_count}</div>
-				</div>
-
-			</div>
+				</div>		</div>
         `;
 	}
 }

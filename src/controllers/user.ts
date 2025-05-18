@@ -8,9 +8,7 @@ class UserController {
 	public async changeUserProfile(data: ChangeUserProfileRequest) {
 		try {
 			store.set("requestStatus.loading", true);
-			store.set("requestStatus.error", null);
-
-			const userResponse = await userAPI.changeUserProfile(data);
+			store.set("requestStatus.error", null);		const userResponse = await userAPI.changeUserProfile(data);
 			if (userResponse?.reason) {
 				throw new Error(userResponse.reason);
 			}
@@ -18,9 +16,7 @@ class UserController {
 			store.set("requestStatus.loading", false);
 			Router.getInstance("#app").go(`/${PAGE_NAMES.profile}`);
 		} catch (error) {
-			console.error("Request error:", error);
-
-			if (error instanceof Error) {
+			console.error("Request error:", error);		if (error instanceof Error) {
 				store.set("requestStatus.error", error.message);
 			} else {
 				store.set("requestStatus.error", "Произошла ошибка при изменении");
@@ -32,17 +28,13 @@ class UserController {
 	public async changeUserPassword(data: UserPasswordRequest) {
 		try {
 			store.set("requestStatus.loading", true);
-			store.set("requestStatus.error", null);
-
-			const userResponse = await userAPI.changeUserPassword(data);
+			store.set("requestStatus.error", null);		const userResponse = await userAPI.changeUserPassword(data);
 			if (userResponse?.reason) {
 				throw new Error(userResponse.reason);
 			}
 			Router.getInstance("#app").go(`/${PAGE_NAMES.profile}`);
 		} catch (error) {
-			console.error("Unexpected error:", error);
-
-			if (error instanceof Error) {
+			console.error("Unexpected error:", error);		if (error instanceof Error) {
 				store.set("requestStatus.error", error.message);
 			} else {
 				store.set("requestStatus.error", "Произошла ошибка при изменении");
@@ -54,26 +46,14 @@ class UserController {
 	async changeAvatar(file: File) {
 		try {
 			store.set("requestStatus.loading", true);
-			store.set("requestStatus.error", null);
-
-			const formData = new FormData();
-			formData.append("avatar", file);
-
-			const userResponse = await userAPI.changeUserAvatar(formData);
-
-			if (userResponse?.reason) {
+			store.set("requestStatus.error", null);		const formData = new FormData();
+			formData.append("avatar", file);		const userResponse = await userAPI.changeUserAvatar(formData);		if (userResponse?.reason) {
 				throw new Error(userResponse.reason);
-			}
-
-			// Обновляем информацию о пользователе в сторе
+			}		// Обновляем информацию о пользователе в сторе
 			store.set("user", userResponse);
-			store.set("requestStatus.loading", false);
-
-			return userResponse;
+			store.set("requestStatus.loading", false);		return userResponse;
 		} catch (error) {
-			console.error("Request error:", error);
-
-			if (error instanceof Error) {
+			console.error("Request error:", error);		if (error instanceof Error) {
 				store.set("requestStatus.error", error.message);
 			} else {
 				store.set("requestStatus.error", "Произошла ошибка при изменении аватара");

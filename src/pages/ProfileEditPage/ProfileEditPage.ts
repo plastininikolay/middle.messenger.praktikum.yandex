@@ -13,9 +13,7 @@ import userController from "../../controllers/user";
 
 class ProfileEditPageBase extends Block {
 	constructor(props: Record<string, any>) {
-		const {user = {}} = props;
-
-		const FormEmail = new InfoItem({
+		const {user = {}} = props;	const FormEmail = new InfoItem({
 			labelText: "Почта",
 			name: "email",
 			value: String(user.email || ""),
@@ -110,18 +108,14 @@ class ProfileEditPageBase extends Block {
 					});
 				},
 			},
-		});
-
-		const validateAll = () => {
+		});	const validateAll = () => {
 			FormFirstName.validate();
 			FormSecondName.validate();
 			FormLogin.validate();
 			FormEmail.validate();
 			FormPhone.validate();
 			FormChatName.validate();
-		};
-
-		const onClickButton = async () => {
+		};	const onClickButton = async () => {
 			validateAll();
 			const formData = getFormData([
 				FormFirstName,
@@ -130,9 +124,7 @@ class ProfileEditPageBase extends Block {
 				FormEmail,
 				FormPhone,
 				FormChatName,
-			]) as Record<string, string>;
-
-			await userController.changeUserProfile({
+			]) as Record<string, string>;		await userController.changeUserProfile({
 				first_name: formData.first_name,
 				second_name: formData.second_name,
 				display_name: formData.display_name,
@@ -140,9 +132,7 @@ class ProfileEditPageBase extends Block {
 				email: formData.email,
 				phone: formData.phone,
 			});
-		};
-
-		super({
+		};	super({
 			...props,
 			avatar: user.avatar,
 			username: user.username || "User",
@@ -160,10 +150,7 @@ class ProfileEditPageBase extends Block {
 					click: onClickButton,
 				},
 			}),
-		});
-
-	}
-
+		});}
 	override render() {
 		return `
             <main class="profile-container">

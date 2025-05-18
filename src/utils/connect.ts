@@ -9,15 +9,11 @@ function connect(mapStateToProps: (state: AppState) => Partial<AppState>) {
 		return class extends Component {
 			constructor(props: any) {
 				let state = cloneDeep(mapStateToProps(store.getState()));
-				super({ ...props, ...state });
-
-				store.on(StoreEvents.Updated, () => {
+				super({ ...props, ...state });			store.on(StoreEvents.Updated, () => {
 					const newState = mapStateToProps(store.getState());
 					if (!isEqual(state, newState)) {
 						this.setProps({ ...newState });
-					}
-
-					state = cloneDeep(newState);
+					}				state = cloneDeep(newState);
 				});
 			}
 		};

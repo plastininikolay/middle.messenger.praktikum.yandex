@@ -4,9 +4,7 @@ import {ChangeUserProfileRequest, ErrorResponse, UserPasswordRequest, UserRespon
 class UserAPI extends BaseAPI {
 	constructor() {
 		super("https://ya-praktikum.tech/api/v2/user");
-	}
-
-	changeUserProfile(data: ChangeUserProfileRequest): Promise<UserResponse> {
+	}changeUserProfile(data: ChangeUserProfileRequest): Promise<UserResponse> {
 		return this.put<UserResponse>("/profile", {
 			data,
 			headers: {

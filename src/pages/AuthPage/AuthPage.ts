@@ -50,28 +50,19 @@ class AuthPageBase extends Block {
 		};
 		const onClickButton = async () => {
 			validateAll();
-
-			// Проверяем валидность формы (нет ошибок валидации)
 			if (FormLogin.isValid() && FormPassword.isValid()) {
 				const formData = getFormData([FormLogin, FormPassword]) as Record<
 					string,
 					string
 				>;
-
-				// Вызываем метод login из UserAuthController
 				await userAuthController.login({
 					login: formData.login,
 					password: formData.password,
 				});
-				// Контроллер уже выполнит перенаправление при успешной авторизации
 			}
-		};
-
-		const onRegisterClick = () => {
+		};	const onRegisterClick = () => {
 			Router.getInstance("#app").go(`/${PAGE_NAMES.registration}`);
-		};
-
-		super({
+		};	super({
 			...props,
 			FormLogin,
 			FormPassword,
@@ -97,7 +88,6 @@ class AuthPageBase extends Block {
 			isLoading: false,
 		});
 	}
-
 	override render() {
 		return `
 			<main class="form-container">

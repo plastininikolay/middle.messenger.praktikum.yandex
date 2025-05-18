@@ -11,19 +11,13 @@ class Store extends EventBus {
 		requestStatus: {
 			loading: false
 		}
-	};
-
-	constructor() {
+	};constructor() {
 		super();
 	}
-
 	public getState() {
 		return this.state;
 	}
-
-	public set(path: string, value: unknown) {
-
-		this.state = set(this.state, path, value);
+	public set(path: string, value: unknown) {	this.state = set(this.state, path, value);
 		this.emit(StoreEvents.Updated);
 	}
 }

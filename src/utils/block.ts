@@ -12,22 +12,8 @@ export default class Block {
 		FLOW_CDU: "flow:component-did-update",
 		FLOW_CWU: "flow:component-will-unmount",
 		FLOW_RENDER: "flow:render",
-	};
-
-	protected _element: HTMLElement | null = null;
-
-	protected _id: string =
-		Date.now().toString() + Math.floor(Math.random() * 1000).toString();
-
-	protected props: BlockProps;
-
-	protected children: Record<string, Block>;
-
-	protected lists: Record<string, any[]>;
-
-	protected eventBus: () => EventBus;
-
-	constructor(propsWithChildren: BlockProps = {}) {
+	};protected _element: HTMLElement | null = null;protected _id: string =
+		Date.now().toString() + Math.floor(Math.random() * 1000).toString();protected props: BlockProps;protected children: Record<string, Block>;protected lists: Record<string, any[]>;protected eventBus: () => EventBus;constructor(propsWithChildren: BlockProps = {}) {
 		const eventBus = new EventBus();
 		const { props, children, lists } =
 			this._getChildrenPropsAndProps(propsWithChildren);
@@ -38,12 +24,9 @@ export default class Block {
 		this._registerEvents(eventBus);
 		eventBus.emit(Block.EVENTS.INIT);
 	}
-
 	private _addEvents(): void {
 		const { events = {}, eventsForInput = {} } = this.props;
-		const inputElement = this._element?.querySelector("input");
-
-		Object.keys(events).forEach((eventName) => {
+		const inputElement = this._element?.querySelector("input");	Object.keys(events).forEach((eventName) => {
 			if (this._element) {
 				this._element.addEventListener(eventName, (e: Event) => {
 					e.preventDefault();
@@ -60,12 +43,9 @@ export default class Block {
 			}
 		});
 	}
-
 	private _removeEvents(): void {
 		const { events = {}, eventsForInput = {} } = this.props;
-		const inputElement = this._element?.querySelector("input");
-
-		Object.keys(events).forEach((eventName) => {
+		const inputElement = this._element?.querySelector("input");	Object.keys(events).forEach((eventName) => {
 			if (this._element) {
 				this._element.removeEventListener(eventName, events[eventName]);
 			}
@@ -76,11 +56,9 @@ export default class Block {
 			}
 		});
 	}
-
 	public getProps() {
 		return this.props;
 	}
-
 	private _registerEvents(eventBus: EventBus): void {
 		eventBus.on(Block.EVENTS.INIT, this.init.bind(this) as EventCallback);
 		eventBus.on(
@@ -100,53 +78,38 @@ export default class Block {
 			this._componentWillUnmount.bind(this) as EventCallback,
 		);
 	}
-
 	protected init(): void {
 		this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
 	}
-
 	private _componentDidMount(): void {
 		this.componentDidMount();
 		Object.values(this.children).forEach((child) => {
 			child.dispatchComponentDidMount();
 		});
 	}
-
 	protected componentDidMount(): void {}
-
 	public dispatchComponentDidMount(): void {
 		this.eventBus().emit(Block.EVENTS.FLOW_CDM);
 		Object.values(this.children).forEach((child) => {
 			child.dispatchComponentDidMount();
 		});
 	}
-
 	private _componentDidUpdate(): void {
 		const response = this.componentDidUpdate();
 		if (!response) {
 			return;
-		}
-
-		this._removeEvents();
-
-		this._render();
+		}	this._removeEvents();	this._render();
 	}
-
 	protected componentDidUpdate(): boolean {
 		return true;
 	}
 	protected componentWillUnmount(): void {}
 
-// Внутренний метод для вызова componentWillUnmount
 	private _componentWillUnmount(): void {
 		this.componentWillUnmount();
-
-		// Вызываем componentWillUnmount для всех дочерних компонентов
 		Object.values(this.children).forEach((child) => {
 			child.dispatchComponentWillUnmount();
 		});
-
-		// Вызываем componentWillUnmount для всех компонентов в списках
 		Object.values(this.lists).forEach((list) => {
 			list.forEach((item) => {
 				if (item instanceof Block) {
@@ -165,9 +128,7 @@ export default class Block {
 	} {
 		const children: Record<string, Block> = {};
 		const props: BlockProps = {};
-		const lists: Record<string, any[]> = {};
-
-		Object.entries(propsAndChildren).forEach(([key, value]) => {
+		const lists: Record<string, any[]> = {};	Object.entries(propsAndChildren).forEach(([key, value]) => {
 			if (value instanceof Block) {
 				children[key] = value;
 			} else if (
@@ -181,17 +142,13 @@ export default class Block {
 		});
 		return { children, props, lists };
 	}
-
 	protected addAttributes(): void {
-		const { attr = {} } = this.props;
-
-		Object.entries(attr).forEach(([key, value]) => {
+		const { attr = {} } = this.props;	Object.entries(attr).forEach(([key, value]) => {
 			if (this._element) {
 				this._element.setAttribute(key, value as string);
 			}
 		});
 	}
-
 	protected setAttributes(attr: any): void {
 		Object.entries(attr).forEach(([key, value]) => {
 			if (this._element) {
@@ -199,76 +156,45 @@ export default class Block {
 			}
 		});
 	}
-
 	public setProps = (nextProps: BlockProps): void => {
 		if (!nextProps) {
 			return;
-		}
-
-		const { props, children, lists } = this._getChildrenPropsAndProps(nextProps);
-
-		Object.entries(children).forEach(([key, child]) => {
+		}	const { props, children, lists } = this._getChildrenPropsAndProps(nextProps);	Object.entries(children).forEach(([key, child]) => {
 			if (this.children[key]) {
 				this.children[key].setProps(child.getProps());
 			} else {
 				this.children[key] = child;
 			}
-		});
-
-		Object.entries(lists).forEach(([key, list]) => {
+		});	Object.entries(lists).forEach(([key, list]) => {
 			this.lists[key] = list;
-		});
-
-		Object.assign(this.props, props);
-	};
-
-	public setChild = (key: string, component: Block): void => {
+		});	Object.assign(this.props, props);
+	};public setChild = (key: string, component: Block): void => {
 		if (this.children[key]) {
 			this.children[key].destroy();
-		}
-
-		this.children[key] = component;
-
-		this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
-	};
-
-	public setLists = (nextList: Record<string, any[]>): void => {
+		}	this.children[key] = component;	this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+	};public setLists = (nextList: Record<string, any[]>): void => {
 		if (!nextList) {
 			return;
-		}
-
-		Object.assign(this.lists, nextList);
-	};
-
-	get element(): HTMLElement | null {
+		}	Object.assign(this.lists, nextList);
+	};get element(): HTMLElement | null {
 		return this._element;
 	}
-
-
-	private _render(): void {
+private _render(): void {
 		console.log("Render");
 		const propsAndStubs = { ...this.props };
 		const tmpId =
 			Date.now().toString() + Math.floor(Math.random() * 1000).toString();
 		Object.entries(this.children).forEach(([key, child]) => {
 			propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
-		});
-
-		Object.entries(this.lists).forEach(([key]) => {
+		});	Object.entries(this.lists).forEach(([key]) => {
 			propsAndStubs[key] = `<div data-id="__l_${tmpId}"></div>`;
-		});
-
-		const fragment = this._createDocumentElement("template");
-		fragment.innerHTML = Handlebars.compile(this.render())(propsAndStubs);
-
-		Object.values(this.children).forEach((child) => {
+		});	const fragment = this._createDocumentElement("template");
+		fragment.innerHTML = Handlebars.compile(this.render())(propsAndStubs);	Object.values(this.children).forEach((child) => {
 			const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
 			if (stub) {
 				stub.replaceWith(child.getContent());
 			}
-		});
-
-		Object.entries(this.lists).forEach(([, child]) => {
+		});	Object.entries(this.lists).forEach(([, child]) => {
 			const listCont = this._createDocumentElement("template");
 			child.forEach((item) => {
 				if (item instanceof Block) {
@@ -281,9 +207,7 @@ export default class Block {
 			if (stub) {
 				stub.replaceWith(listCont.content);
 			}
-		});
-
-		const newElement = fragment.content.firstElementChild as HTMLElement;
+		});	const newElement = fragment.content.firstElementChild as HTMLElement;
 		if (this._element && newElement) {
 			this._element.replaceWith(newElement);
 		}
@@ -292,27 +216,20 @@ export default class Block {
 		this.addAttributes();
 		this.dispatchComponentDidMount();
 	}
-
 	protected render(): string {
 		return "";
 	}
-
 	public getContent(): HTMLElement {
 		if (!this._element) {
-			this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
-
-			if (!this._element) {
+			this.eventBus().emit(Block.EVENTS.FLOW_RENDER);		if (!this._element) {
 				throw new Error("Element is not created");
 			}
 		}
 		return this._element;
 	}
-
 	private _makePropsProxy(props: any): any {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
-		const self = this;
-
-		return new Proxy(props, {
+		const self = this;	return new Proxy(props, {
 			get(target: any, prop: string) {
 				const value = target[prop];
 				return typeof value === "function" ? value.bind(target) : value;
@@ -328,37 +245,26 @@ export default class Block {
 			},
 		});
 	}
-
 	private _createDocumentElement(tagName: string): HTMLTemplateElement {
 		return document.createElement(tagName) as HTMLTemplateElement;
 	}
-
 	public show(): void {
 		const content = this.getContent();
 		if (content) {
 			content.style.display = "block";
 		}
 	}
-
 	public hide(): void {
 		const content = this.getContent();
 		if (content) {
 			content.style.display = "none";
 		}
 	}
-
 	public destroy(): void {
-		// Сначала вызываем componentWillUnmount для текущего компонента и всех дочерних
-		this.dispatchComponentWillUnmount();
-
-		this._removeEvents();
-
-		// Рекурсивно уничтожаем все дочерние компоненты
+		this.dispatchComponentWillUnmount();	this._removeEvents();
 		Object.values(this.children).forEach((child) => {
 			child.destroy();
 		});
-
-		// Уничтожаем все компоненты в списках
 		Object.values(this.lists).forEach((list) => {
 			list.forEach((item) => {
 				if (item instanceof Block) {
@@ -366,12 +272,8 @@ export default class Block {
 				}
 			});
 		});
-
-		// Удаляем элемент из DOM
 		if (this._element) {
 			this._element.remove();
-		}
-
-		this._element = null;
+		}	this._element = null;
 	}
 }

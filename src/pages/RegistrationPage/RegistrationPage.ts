@@ -134,9 +134,7 @@ class RegistrationPageBase extends Block {
 			FormConfirmPassword.validate();
 		};
 		const onClickButton = async () => {
-			validateAll();
-
-			// Проверяем валидность всех форм перед отправкой
+			validateAll();		// Проверяем валидность всех форм перед отправкой
 			if (
 				FormFirstName.isValid() &&
 				FormSecondName.isValid() &&
@@ -154,18 +152,14 @@ class RegistrationPageBase extends Block {
 					FormPhone,
 					FormPassword,
 					FormConfirmPassword,
-				]) as Record<string, string>;
-
-				// Проверяем совпадение паролей
+				]) as Record<string, string>;			// Проверяем совпадение паролей
 				if (formData.password !== formData["confirm-password"]) {
 					// Устанавливаем ошибку для поля подтверждения пароля
 					FormConfirmPassword.setProps({
 						validationMessage: "Пароли не совпадают",
 					});
 					return;
-				}
-
-				await userAuthController.signup({
+				}			await userAuthController.signup({
 					first_name: formData.first_name,
 					second_name: formData.second_name,
 					login: formData.login,
@@ -174,13 +168,9 @@ class RegistrationPageBase extends Block {
 					phone: formData.phone,
 				});
 			}
-		};
-
-		const onLoginClick = () => {
+		};	const onLoginClick = () => {
 			Router.getInstance("#app").go(`/${PAGE_NAMES.authentication}`);
-		};
-
-		super({
+		};	super({
 			...props,
 			FormFirstName,
 			FormSecondName,
@@ -209,7 +199,6 @@ class RegistrationPageBase extends Block {
 			isLoading: false,
 		});
 	}
-
 	override render() {
 		return `
             <main class="form-container">

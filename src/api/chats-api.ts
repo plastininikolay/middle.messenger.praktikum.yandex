@@ -4,18 +4,14 @@ import {ChatsRequest, ChatsResponse, CreateChatRequest, CreateChatResponse, Erro
 class ChatsAPI extends BaseAPI {
 	constructor() {
 		super("https://ya-praktikum.tech/api/v2/chats");
-	}
-
-	getChats(data: ChatsRequest): Promise<ChatsResponse> {
+	}getChats(data: ChatsRequest): Promise<ChatsResponse> {
 		return this.get<ChatsResponse>("/", {
 			data,
 			headers: {
 				"Content-Type": "application/json",
 			},
 		});
-	}
-
-	createChat(data: CreateChatRequest): Promise<CreateChatResponse | ErrorResponse> {
+	}createChat(data: CreateChatRequest): Promise<CreateChatResponse | ErrorResponse> {
 		return this.post<CreateChatResponse | ErrorResponse>("/", {
 			data,
 			headers: {
