@@ -6,28 +6,33 @@ import {
 	SignupResponse,
 	UserResponse,
 } from "./types";
+import {BASE_URL} from "../constanst.ts";
 
 class AuthAPI extends BaseAPI {
 	constructor() {
-		super("https://ya-praktikum.tech/api/v2/auth");
-	}signup(data: SignupRequest): Promise<SignupResponse> {
-		return this.post<SignupResponse>("/signup", {
+		super(`${BASE_URL}/auth`);
+	}
+	signup(data: SignupRequest): Promise<SignupResponse> {
+		return this.post("/signup", {
 			data,
 			headers: {
 				"Content-Type": "application/json",
 			},
 		});
-	}signin(data: SigninRequest): Promise<void | ErrorResponse> {
-		return this.post<void | ErrorResponse>("/signin", {
+	}
+	signin(data: SigninRequest): Promise<void | ErrorResponse> {
+		return this.post("/signin", {
 			data,
 			headers: {
 				"Content-Type": "application/json",
 			},
 		});
-	}getUser(): Promise<UserResponse> {
-		return this.get<UserResponse>("/user");
-	}logout(): Promise<void> {
-		return this.post<void>("/logout");
+	}
+	getUser(): Promise<UserResponse> {
+		return this.get("/user");
+	}
+	logout(): Promise<void> {
+		return this.post("/logout");
 	}
 }
 

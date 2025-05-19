@@ -83,7 +83,7 @@ export type GetTokenResponse = {
 }
 
 export type DeleteChatRequest = {
-	chatId: string;
+	chatId: number;
 };
 
 export type DeleteChatResponse = {

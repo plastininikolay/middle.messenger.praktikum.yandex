@@ -1,18 +1,36 @@
 import {BaseAPI} from "./base-api";
-import {ChatsRequest, ChatsResponse, CreateChatRequest, CreateChatResponse, ErrorResponse,} from "./types";
+import {
+	ChatsRequest,
+	ChatsResponse,
+	CreateChatRequest,
+	CreateChatResponse,
+	DeleteChatRequest, DeleteChatResponse,
+	ErrorResponse,
+} from "./types";
+import {BASE_URL} from "../constanst.ts";
 
 class ChatsAPI extends BaseAPI {
 	constructor() {
-		super("https://ya-praktikum.tech/api/v2/chats");
-	}getChats(data: ChatsRequest): Promise<ChatsResponse> {
-		return this.get<ChatsResponse>("/", {
+		super(`${BASE_URL}/chats`);
+	}
+	getChats(data: ChatsRequest): Promise<ChatsResponse> {
+		return this.get("/", {
 			data,
 			headers: {
 				"Content-Type": "application/json",
 			},
 		});
-	}createChat(data: CreateChatRequest): Promise<CreateChatResponse | ErrorResponse> {
-		return this.post<CreateChatResponse | ErrorResponse>("/", {
+	}
+	createChat(data: CreateChatRequest): Promise<CreateChatResponse | ErrorResponse> {
+		return this.post("/", {
+			data,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	}
+	deleteChat(data: DeleteChatRequest): Promise<DeleteChatResponse | ErrorResponse> {
+		return this.delete("/", {
 			data,
 			headers: {
 				"Content-Type": "application/json",
@@ -20,7 +38,7 @@ class ChatsAPI extends BaseAPI {
 		});
 	}
 	addUserToChat(userId: number, chatId: number): Promise<void | ErrorResponse> {
-		return this.put<void | ErrorResponse>('/users', {
+		return this.put('/users', {
 			data: {
 				users: [userId],
 				chatId: chatId
@@ -31,7 +49,7 @@ class ChatsAPI extends BaseAPI {
 		});
 	}
 	removeUserFromChat(userId: number, chatId: number): Promise<void | ErrorResponse> {
-		return this.delete<void | ErrorResponse>('/users', {
+		return this.delete('/users', {
 			data: {
 				users: [userId],
 				chatId: chatId

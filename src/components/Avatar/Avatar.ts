@@ -2,6 +2,7 @@ import Block from "../../utils/block";
 import UserController from "../../controllers/user";
 import "./Avatar.scss";
 import {AvatarProps} from "./types.ts";
+import {BASE_URL} from "../../constanst.ts";
 
 export class Avatar extends Block {
 	private readonly fileInput: HTMLInputElement;constructor(props: AvatarProps) {
@@ -55,7 +56,7 @@ export class Avatar extends Block {
 	}
 	override render(): string {
 		const { avatarUrl, alt, size, editable, loading } = this.props;	const avatarClass = `avatar avatar-${size} ${editable ? 'avatar-editable' : ''}`;
-		const baseUrl = 'https://ya-praktikum.tech/api/v2/resources';
+		const baseUrl = `${BASE_URL}/resources`;
 		const fullAvatarUrl = avatarUrl ? `${baseUrl}${avatarUrl}` : '';	return `
             <div class="${avatarClass}">
                 ${!fullAvatarUrl ? `

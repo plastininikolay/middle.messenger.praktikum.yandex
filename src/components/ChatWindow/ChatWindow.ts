@@ -27,13 +27,15 @@ export class ChatWindowBase extends Block {
 		});
 		const onClickSendButton = () => {
 			if (ChatInputComponent.validate()) {
-				const messageText = ChatInputComponent.getProps().value;			if (messageText && messageText.trim()) {
+				const messageText = ChatInputComponent.getProps().value;
+				if (messageText && messageText.trim()) {
 					// Отправляем сообщение через контроллер
 					ChatsController.sendMessage(messageText);				// Очищаем поле ввода после отправки
 					ChatInputComponent.setProps({value: ""});
 				}
 			}
-		};	super({
+		};
+		super({
 			...props,
 			SendButton: new Button({
 				label: "Отправить",
@@ -45,6 +47,7 @@ export class ChatWindowBase extends Block {
 			ChatInput: ChatInputComponent,
 		});
 	}
+
 	override componentDidUpdate(): boolean {
 		const UserIdInputComponent = new ChatInput({
 			name: "user_id",
@@ -97,6 +100,17 @@ export class ChatWindowBase extends Block {
 				}
 			}
 		};
+		const onClickRemoveChatButton = async () => {
+			try {
+				await ChatsController.deleteChat({chatId: this.props.chat.id});
+				UserIdInputComponent.setProps({value: ""});
+				alert(`Чат с ID ${this.props.chat.id} успешно удален`);
+			} catch (error) {
+				console.error('Ошибка при удалении чата:', error);
+				alert('Не удалось удалить чат. Проверьте ID и попробуйте снова.');
+
+			}
+		};
 		this.children = {
 			...this.children,
 			UserIdInput: UserIdInputComponent,
@@ -114,9 +128,17 @@ export class ChatWindowBase extends Block {
 					click: onClickRemoveUserButton,
 				},
 			}),
+			DeleteChat: new Button({
+				label: "Удалить чат",
+				variant: ButtonVariantEnum.DELETE,
+				events: {
+					click: onClickRemoveChatButton,
+				},
+			})
 		}
 		return true;
 	}
+
 	override render(): string {
 		const formatTime = (timeStr: string) => {
 			try {
@@ -143,6 +165,7 @@ export class ChatWindowBase extends Block {
 							{{{ UserIdInput }}}
 							{{{ AddUserButton }}}
 							{{{ RemoveUserButton }}}
+							{{{ DeleteChat }}}
 							</div>
 						</div>
 						<div class="messages">
@@ -160,11 +183,13 @@ export class ChatWindowBase extends Block {
 }
 
 
-const mapStateToProps = (state: Partial<AppState>) => {
-	return {
-		user: state.user,
-		messages: state.messages
+const
+	mapStateToProps = (state: Partial<AppState>) => {
+		return {
+			user: state.user,
+			messages: state.messages
+		};
 	};
-};
 
-export const ChatWindow = connect(mapStateToProps)(ChatWindowBase);
+export const
+	ChatWindow = connect(mapStateToProps)(ChatWindowBase);

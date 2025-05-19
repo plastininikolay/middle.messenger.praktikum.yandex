@@ -1,11 +1,12 @@
 import { BaseAPI } from "./base-api";
 import {ChangeUserProfileRequest, ErrorResponse, UserPasswordRequest, UserResponse} from "./types";
+import {BASE_URL} from "../constanst.ts";
 
 class UserAPI extends BaseAPI {
 	constructor() {
-		super("https://ya-praktikum.tech/api/v2/user");
+		super(`${BASE_URL}/user`);
 	}changeUserProfile(data: ChangeUserProfileRequest): Promise<UserResponse> {
-		return this.put<UserResponse>("/profile", {
+		return this.put("/profile", {
 			data,
 			headers: {
 				"Content-Type": "application/json",
@@ -13,7 +14,7 @@ class UserAPI extends BaseAPI {
 		});
 	}
 	changeUserPassword(data: UserPasswordRequest): Promise<void | ErrorResponse> {
-		return this.put<void | ErrorResponse>("/password", {
+		return this.put("/password", {
 			data,
 			headers: {
 				"Content-Type": "application/json",
@@ -21,7 +22,7 @@ class UserAPI extends BaseAPI {
 		});
 	}
 	changeUserAvatar(formData: FormData): Promise<UserResponse> {
-		return this.put<UserResponse>("/profile/avatar", {
+		return this.put("/profile/avatar", {
 			data: formData,
 		});
 	}

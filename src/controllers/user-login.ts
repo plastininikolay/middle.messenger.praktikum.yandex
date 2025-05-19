@@ -8,17 +8,21 @@ class UserAuthController {
 	public async login(data: SigninRequest) {
 		try {
 			store.set("requestStatus.loading", true);
-			store.set("requestStatus.error", null);		const authResponse = await authAPI.signin({
+			store.set("requestStatus.error", null);
+			const authResponse = await authAPI.signin({
 				login: data.login,
 				password: data.password,
 			});
 			if (authResponse?.reason) {
 				throw new Error(authResponse.reason);
-			}		const user = await authAPI.getUser();		store.set("user", user);
+			}		const user = await authAPI.getUser();
+			store.set("user", user);
 			store.set("isLoggedIn", true);
-			store.set("requestStatus.loading", false);		Router.getInstance("#app").go(`/${PAGE_NAMES.chats}`);
+			store.set("requestStatus.loading", false);
+			Router.getInstance("#app").go(`/${PAGE_NAMES.chats}`);
 		} catch (error) {
-			console.error("Request error:", error);		if (error instanceof Error) {
+			console.error("Request error:", error);
+			if (error instanceof Error) {
 				store.set("requestStatus.error", error.message);
 			} else {
 				store.set("requestStatus.error", "Произошла ошибка при входе");
@@ -30,13 +34,16 @@ class UserAuthController {
 	public async signup(data: SignupRequest) {
 		try {
 			store.set("requestStatus.loading", true);
-			store.set("requestStatus.error", null);		const authResponse = await authAPI.signup(data);		if (authResponse?.reason) {
+			store.set("requestStatus.error", null);
+			const authResponse = await authAPI.signup(data);		if (authResponse?.reason) {
 				throw new Error(authResponse.reason);
 			}
 			await authAPI.signin({
 				login: data.login,
 				password: data.password,
-			});		const user = await authAPI.getUser();		store.set("user", user);
+			});
+			const user = await authAPI.getUser();
+			store.set("user", user);
 			store.set("isLoggedIn", true);
 			store.set("requestStatus.loading", false);		Router.getInstance("#app").go(`/${PAGE_NAMES.chats}`);
 		} catch (error) {
