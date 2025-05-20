@@ -22,10 +22,8 @@ class ProfilePageBase extends Block {
 		super({
 			...props,
 			UserAvatar: new Avatar({
-				avatarUrl: user.avatar || '',
-				alt: username,
 				size: 'large',
-				editable: true
+				editable: false
 			}),
 			username: username || "-",
 			InfoItems: [
@@ -89,13 +87,6 @@ class ProfilePageBase extends Block {
 				},
 			}),
 		});
-	}
-	override componentDidUpdate(): boolean {
-		if (this.children.UserAvatar && this.props.user?.avatar) {
-			this.children.UserAvatar.setProps({
-				avatarUrl: this.props.user.avatar
-			});
-		}	return true;
 	}
 	override render() {
 		return `

@@ -47,9 +47,11 @@ class UserController {
 		try {
 			store.set("requestStatus.loading", true);
 			store.set("requestStatus.error", null);		const formData = new FormData();
-			formData.append("avatar", file);		const userResponse = await userAPI.changeUserAvatar(formData);		if (userResponse?.reason) {
+			formData.append("avatar", file);
+			const userResponse = await userAPI.changeUserAvatar(formData);		if (userResponse?.reason) {
 				throw new Error(userResponse.reason);
-			}		// Обновляем информацию о пользователе в сторе
+			}
+			// Обновляем информацию о пользователе в сторе
 			store.set("user", userResponse);
 			store.set("requestStatus.loading", false);		return userResponse;
 		} catch (error) {

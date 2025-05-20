@@ -4,16 +4,18 @@ import {Button} from "../../components/Button/Button";
 import {ButtonVariantEnum} from "../../components/Button/types";
 import "../../styles/profile.scss";
 import {AppState, TYPES_VALIDATION} from "../../types";
-import {avatarUrl} from "../../mocks";
 import {getFormData} from "../../utils/logForm";
 import {validateInput} from "../../utils/validation";
 import {InfoItemProps} from "../../components/InfoItem/types";
 import connect from "../../utils/connect";
 import userController from "../../controllers/user";
+import {Avatar} from "../../components/Avatar/Avatar.ts";
 
 class ProfileEditPageBase extends Block {
 	constructor(props: Record<string, any>) {
-		const {user = {}} = props;	const FormEmail = new InfoItem({
+		const {user = {}} = props;
+		const username = `${user.first_name} ${user.second_name}`;
+		const FormEmail = new InfoItem({
 			labelText: "Почта",
 			name: "email",
 			value: String(user.email || ""),
@@ -134,14 +136,17 @@ class ProfileEditPageBase extends Block {
 			});
 		};	super({
 			...props,
-			avatar: user.avatar,
-			username: user.username || "User",
+			username,
 			FormEmail,
 			FormLogin,
 			FormFirstName,
 			FormSecondName,
 			FormChatName,
 			FormPhone,
+			UserAvatar: new Avatar({
+				size: 'large',
+				editable: true
+			}),
 			SaveButton: new Button({
 				isFull: true,
 				label: "Сохранить",
@@ -155,7 +160,7 @@ class ProfileEditPageBase extends Block {
 		return `
             <main class="profile-container">
                 <div class="profile-header">
-                    <img src="${this.props.avatar || avatarUrl}" alt="Аватар пользователя" class="avatar">
+                     {{{ UserAvatar }}}
                     <h1 class="username">${this.props.username}</h1>
                 </div>
                 <div class="profile-info">
