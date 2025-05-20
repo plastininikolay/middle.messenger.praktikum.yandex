@@ -13,10 +13,24 @@
   }
 
   .error-message {
+    background: var(--white-color);
     position: absolute;
+    padding: 3px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 83, 65, 0.15);
     left: 0;
-    top: 40px;
-    font-size: 11px;
-    color: #ff5341;
+    bottom: 40px;
+    font-size: 12px;
+    color: var(--accent-color);
+    height: fit-content;
+  }
+}
+.error-message.bottom {
+  bottom: 0;
+  top: 30px
+}
+.error-input {
+  input[type="text"] {
+    border: 1px solid var(--accent-color);
   }
 }

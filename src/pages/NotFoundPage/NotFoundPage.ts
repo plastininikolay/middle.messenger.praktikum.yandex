@@ -1,18 +1,24 @@
-import {Button} from "../../components/Button/Button.ts";
-import {ButtonVariantEnum} from "../../components/Button/types.ts";
-import Block from "../../utils/block.ts";
-import '../../styles/errors.scss'
-import {PAGE_NAMES} from "../../App.ts";
+import { Button } from "../../components/Button/Button";
+import { ButtonVariantEnum } from "../../components/Button/types";
+import Block from "../../utils/block";
+import "../../styles/errors.scss";
+import { PAGE_NAMES } from "../../types";
+import Router from "../../utils/router";
 
 export class NotFoundPage extends Block {
 	constructor() {
-		super({
+		const onChatClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.chats}`);
+		};	super({
 			Button: new Button({
 				isFull: false,
 				isLink: true,
 				url: PAGE_NAMES.chats,
 				variant: ButtonVariantEnum.SECONDARY,
-				label: 'Назад к чатам'
+				label: "Назад к чатам",
+				events: {
+					click: onChatClick
+				},
 			}),
 		});
 	}

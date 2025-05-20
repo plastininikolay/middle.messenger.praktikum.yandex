@@ -1,77 +1,99 @@
-import Block from "../../utils/block.ts";
-import {InfoItem} from "../../components/InfoItem/infoItem.ts";
-import {Button} from "../../components/Button/Button.ts";
-import {ButtonVariantEnum} from "../../components/Button/types.ts";
-import '../../styles/profile.scss'
-import {TYPES_VALIDATION, UserData} from "../../types.ts";
-import {PAGE_NAMES} from "../../App.ts";
-import {avatarUrl} from "../../mocks.ts";
-import {getFormData} from "../../utils/logForm.ts";
-import {validateInput} from "../../utils/validation.ts";
-import {InfoItemProps} from "../../components/InfoItem/types.ts";
+import Block from "../../utils/block";
+import { InfoItem } from "../../components/InfoItem/infoItem";
+import { Button } from "../../components/Button/Button";
+import { ButtonVariantEnum } from "../../components/Button/types";
+import "../../styles/profile.scss";
+import { AppState, PAGE_NAMES, TYPES_VALIDATION } from "../../types";
+import { avatarUrl } from "../../mocks";
+import { getFormData } from "../../utils/logForm";
+import { validateInput } from "../../utils/validation";
+import { InfoItemProps } from "../../components/InfoItem/types";
+import connect from "../../utils/connect";
+import UserController from "../../controllers/user"
 
-export class ChangePasswordPage extends Block {
-	constructor(user: UserData) {
-			const OldPassword = new InfoItem({
-				labelText: 'Старый пароль',
-				name: 'password',
-				value: user.password
-			});
-			const NewPassword = new InfoItem({
-				labelText: 'Новый пароль',
-				name: 'new_password',
-				value: '', edit: true,
-				typeOfValidation: TYPES_VALIDATION.password,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.NewPassword.getProps() as InfoItemProps})
-					}
+class ChangePasswordPageBase extends Block {
+	constructor(props: Record<string, any>) {
+		const { user = {} } = props;	const OldPassword = new InfoItem({
+			labelText: "Старый пароль",
+			name: "password",
+			value: "",
+			edit: true,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.OldPassword.getProps() as InfoItemProps,
+					});
 				}
-			});
-			const CheckNewPassword = new InfoItem({
-				labelText: 'Повторите новый пароль',
-				name: 'check_new_password',
-				value: '',
-				edit: true,
-				typeOfValidation: TYPES_VALIDATION.password,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.CheckNewPassword.getProps() as InfoItemProps})
-					}
-				}
-			});
-
-		const validateAll = () => {
+			}
+		});
+		const NewPassword = new InfoItem({
+			labelText: "Новый пароль",
+			name: "new_password",
+			value: "",
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.password,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.NewPassword.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});
+		const CheckNewPassword = new InfoItem({
+			labelText: "Повторите новый пароль",
+			name: "check_new_password",
+			value: "",
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.password,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.CheckNewPassword.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});	const validateAll = () => {
 			NewPassword.validate();
 			CheckNewPassword.validate();
-		}
-		const onClickButton = () => {
+		};	const onClickButton = async () => {
 			validateAll();
-			console.log(getFormData([
-				NewPassword,
-				CheckNewPassword
-			]))
-		}
-			super({
+			const formData = getFormData([NewPassword, CheckNewPassword, OldPassword]) as Record<
+				string,
+				string
+			>;
+			if (formData.new_password === formData.check_new_password) {
+				await UserController.changeUserPassword({
+					oldPassword: formData.password,
+					newPassword: formData.new_password
+				})
+			} else {
+				console.error("Пароли не совпадают");
+			}
+		};	super({
+			...props,
 			avatar: user.avatar,
-			username: user.username || 'User',
-				OldPassword,
-				NewPassword,
-				CheckNewPassword,
+			username: user.username || "User",
+			OldPassword,
+			NewPassword,
+			CheckNewPassword,
 			SaveButton: new Button({
 				isFull: true,
 				url: PAGE_NAMES.profile,
-				label: 'Сохранить',
+				label: "Сохранить",
 				variant: ButtonVariantEnum.PRIMARY,
 				events: {
-					click: onClickButton
-				}
+					click: onClickButton,
+				},
 			}),
 		});
 	}
-
 	override render() {
 		return `
             <main class="profile-container">
@@ -86,9 +108,20 @@ export class ChangePasswordPage extends Block {
                 </div>
                 <div class="profile-actions">
                     <div class="profile-buttons">
-                        {{{ SaveButton }}}
+                    ${this.props.requestStatus.loading ? '<div class="loader"></div>' : "{{{ SaveButton }}}"}
+                    ${this.props.requestStatus.error ? `<div class="error-message">${this.props.requestStatus.error}</div>` : ""}
+
                     </div>
                 </div>
             </main>`;
 	}
 }
+
+const mapStateToProps = (state: Partial<AppState>) => ({
+	user: state.user,
+	requestStatus: state.requestStatus
+});
+
+export const ChangePasswordPage = connect(mapStateToProps)(
+	ChangePasswordPageBase,
+);

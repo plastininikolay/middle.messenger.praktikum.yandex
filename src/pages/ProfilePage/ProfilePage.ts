@@ -1,53 +1,107 @@
-import Block from "../../utils/block.ts";
-import {InfoItem} from "../../components/InfoItem/infoItem.ts";
-import {Button} from "../../components/Button/Button.ts";
-import {ButtonVariantEnum} from "../../components/Button/types.ts";
-import '../../styles/profile.scss'
-import {UserData} from "../../types.ts";
-import {PAGE_NAMES} from "../../App.ts";
-import {avatarUrl} from "../../mocks.ts";
+import Block from "../../utils/block";
+import { InfoItem } from "../../components/InfoItem/infoItem";
+import { Button } from "../../components/Button/Button";
+import { ButtonVariantEnum } from "../../components/Button/types";
+import "../../styles/profile.scss";
+import { AppState, PAGE_NAMES } from "../../types";
+import Router from "../../utils/router";
+import connect from "../../utils/connect";
+import UserAuthController from "../../controllers/user-login"
+import {Avatar} from "../../components/Avatar/Avatar.ts";
 
-
-export class ProfilePage extends Block {
-	constructor(user: UserData) {
+class ProfilePageBase extends Block {
+	constructor(props: Record<string, any>) {
+		const { user = {} } = props;	const onEditProfileClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.profileEdit}`);
+		};	const onChangePasswordClick = () => {
+			Router.getInstance("#app").go(`/${PAGE_NAMES.chagePassword}`);
+		};	const onLogoutClick = () => {
+			void UserAuthController.logout()
+		};
+		const username = `${user.first_name} ${user.second_name}`;
 		super({
-			avatar: user.avatar,
-			username: user.username || 'Имя пользователя',
+			...props,
+			UserAvatar: new Avatar({
+				avatarUrl: user.avatar || '',
+				alt: username,
+				size: 'large',
+				editable: true
+			}),
+			username: username || "-",
 			InfoItems: [
-				new InfoItem({ labelText: 'Почта', name: 'email', value: user.email || 'user@example.com' }),
-				new InfoItem({ labelText: 'Логин', name: 'login', value: user.login || 'username123' }),
-				new InfoItem({ labelText: 'Имя', name: 'first_name', value: user.firstName || 'User' }),
-				new InfoItem({ labelText: 'Фамилия', name: 'last_name', value: user.lastName || 'Name' }),
-				new InfoItem({ labelText: 'Имя в чате', name: 'chat_name', value: user.chatName || 'ChatName' }),
-				new InfoItem({ labelText: 'Телефон', name: 'phone', value: user.phone || '+7 (123) 456-78-90' })
+				new InfoItem({
+					labelText: "Почта",
+					name: "email",
+					value: user.email || "-",
+				}),
+				new InfoItem({
+					labelText: "Логин",
+					name: "login",
+					value: user.login || "-",
+				}),
+				new InfoItem({
+					labelText: "Имя",
+					name: "first_name",
+					value: user.first_name || "-",
+				}),
+				new InfoItem({
+					labelText: "Фамилия",
+					name: "second_name",
+					value: user.second_name || "-",
+				}),
+				new InfoItem({
+					labelText: "Имя в чате",
+					name: "display_name",
+					value: user.display_name || "-",
+				}),
+				new InfoItem({
+					labelText: "Телефон",
+					name: "phone",
+					value: user.phone || "-",
+				}),
 			],
 			EditProfileButton: new Button({
 				isLink: true,
 				url: PAGE_NAMES.profileEdit,
-				label: 'Изменить данные',
+				label: "Изменить данные",
 				variant: ButtonVariantEnum.UNDERLINE,
+				events: {
+					click: onEditProfileClick,
+				},
 			}),
 			ChangePasswordButton: new Button({
 				isLink: true,
 				url: PAGE_NAMES.chagePassword,
-				label: 'Изменить пароль',
+				label: "Изменить пароль",
 				variant: ButtonVariantEnum.UNDERLINE,
+				events: {
+					click: onChangePasswordClick,
+				},
 			}),
 			LogoutButton: new Button({
 				isLink: true,
 				url: PAGE_NAMES.authentication,
-				label: 'Выйти',
+				label: "Выйти",
 				variant: ButtonVariantEnum.UNDERLINE,
-				color: '#FF0000'
+				color: "#FF0000",
+				events: {
+					click: onLogoutClick,
+				},
 			}),
 		});
 	}
-
+	override componentDidUpdate(): boolean {
+		if (this.children.UserAvatar && this.props.user?.avatar) {
+			this.children.UserAvatar.setProps({
+				avatarUrl: this.props.user.avatar
+			});
+		}	return true;
+	}
 	override render() {
 		return `
             <main class="profile-container">
                 <div class="profile-header">
-                    <img src="${this.props.avatar || avatarUrl}" alt="Аватар пользователя" class="avatar">
+                     {{{ UserAvatar }}}
                     <h1 class="username">${this.props.username}</h1>
                 </div>
                 <div class="profile-info">
@@ -61,3 +115,9 @@ export class ProfilePage extends Block {
             </main>`;
 	}
 }
+
+const mapStateToProps = (state: Partial<AppState>) => ({
+	user: state.user,
+});
+
+export const ProfilePage = connect(mapStateToProps)(ProfilePageBase);

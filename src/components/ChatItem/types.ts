@@ -1,6 +1,7 @@
-import {ChatData} from "../../types.ts";
+import { ChatData } from "../../types";
 
 export interface ChatItemProps {
-	chat: ChatData,
-	isActive: boolean
+	chat: ChatData;
+	isActive: boolean;
+	events?: Record<string, (e: Event) => void>
 }

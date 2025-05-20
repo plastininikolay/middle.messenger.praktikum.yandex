@@ -1,7 +1,8 @@
 export enum ButtonVariantEnum  {
 	PRIMARY = 'primary',
 	SECONDARY = 'secondary',
-	UNDERLINE = 'underline'
+	UNDERLINE = 'underline',
+	DELETE = 'delete'
 }
 
 export interface ButtonProps {

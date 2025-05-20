@@ -1,118 +1,141 @@
-import Block from "../../utils/block.ts";
-import {InfoItem} from "../../components/InfoItem/infoItem.ts";
-import {Button} from "../../components/Button/Button.ts";
-import {ButtonVariantEnum} from "../../components/Button/types.ts";
-import '../../styles/profile.scss'
-import {TYPES_VALIDATION, UserData} from "../../types.ts";
-import {avatarUrl} from "../../mocks.ts";
-import {getFormData} from "../../utils/logForm.ts";
-import {validateInput} from "../../utils/validation.ts";
-import {InfoItemProps} from "../../components/InfoItem/types.ts";
+import Block from "../../utils/block";
+import {InfoItem} from "../../components/InfoItem/infoItem";
+import {Button} from "../../components/Button/Button";
+import {ButtonVariantEnum} from "../../components/Button/types";
+import "../../styles/profile.scss";
+import {AppState, TYPES_VALIDATION} from "../../types";
+import {avatarUrl} from "../../mocks";
+import {getFormData} from "../../utils/logForm";
+import {validateInput} from "../../utils/validation";
+import {InfoItemProps} from "../../components/InfoItem/types";
+import connect from "../../utils/connect";
+import userController from "../../controllers/user";
 
-export class ProfileEditPage extends Block {
-	constructor(user: UserData) {
-
-			const FormEmail = new InfoItem({
-				labelText: 'Почта',
-				name: 'email',
-				value: String(user.email),
-				edit: true,
-				typeOfValidation: TYPES_VALIDATION.email,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.FormEmail.getProps() as InfoItemProps})
-					}
-				}
-			});
-			const FormLogin = new InfoItem({
-				labelText: 'Логин',
-				name: 'login',
-				value: String(user.login),
-				edit: true,
-				typeOfValidation: TYPES_VALIDATION.login,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.FormLogin.getProps() as InfoItemProps})
-					}
-				}
-			});
-			const FormFirstName = new InfoItem({
-				labelText: 'Имя',
-				name: 'first_name',
-				value: String(user.firstName),
-				edit: true,
-				typeOfValidation: TYPES_VALIDATION.first_name,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.FormFirstName.getProps() as InfoItemProps})
-					}
-				}
-			});
-			const FormSecondName = new InfoItem({
-				labelText: 'Фамилия',
-				name: 'last_name',
-				value: String(user.lastName),
-				edit: true,
-				typeOfValidation: TYPES_VALIDATION.second_name,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.FormSecondName.getProps() as InfoItemProps})
-					}
-				}
-			});
-			const FormChatName = new InfoItem({
-				labelText: 'Имя в чате',
-				name: 'chat_name',
-				value: String(user.chatName),
-				edit: true,
-				typeOfValidation: TYPES_VALIDATION.first_name,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.FormChatName.getProps() as InfoItemProps})
-					}
-				}
-			});
-			const FormPhone = new InfoItem({
-				labelText: 'Телефон',
-				name: 'phone',
-				value: String(user.phone),
-				edit: true,
-				typeOfValidation: TYPES_VALIDATION.phone,
-				eventsForInput: {
-					blur: (e) => {
-						const element = e.currentTarget as HTMLInputElement;
-						validateInput({value: element?.value, props: this.children.FormPhone.getProps() as InfoItemProps})
-					}
-				}
-			});
-
-		const validateAll = () => {
+class ProfileEditPageBase extends Block {
+	constructor(props: Record<string, any>) {
+		const {user = {}} = props;	const FormEmail = new InfoItem({
+			labelText: "Почта",
+			name: "email",
+			value: String(user.email || ""),
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.email,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.FormEmail.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});
+		const FormLogin = new InfoItem({
+			labelText: "Логин",
+			name: "login",
+			value: String(user.login || ""),
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.login,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.FormLogin.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});
+		const FormFirstName = new InfoItem({
+			labelText: "Имя",
+			name: "first_name",
+			value: String(user.first_name || ""),
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.first_name,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.FormFirstName.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});
+		const FormSecondName = new InfoItem({
+			labelText: "Фамилия",
+			name: "second_name",
+			value: String(user.second_name || ""),
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.second_name,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.FormSecondName.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});
+		const FormChatName = new InfoItem({
+			labelText: "Имя в чате",
+			name: "display_name",
+			value: String(user.display_name || ""),
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.first_name,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.FormChatName.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});
+		const FormPhone = new InfoItem({
+			labelText: "Телефон",
+			name: "phone",
+			value: String(user.phone || ""),
+			edit: true,
+			typeOfValidation: TYPES_VALIDATION.phone,
+			eventsForInput: {
+				blur: (e) => {
+					const element = e.currentTarget as HTMLInputElement;
+					validateInput({
+						value: element?.value,
+						props: this.children.FormPhone.getProps() as InfoItemProps,
+					});
+				},
+			},
+		});	const validateAll = () => {
 			FormFirstName.validate();
 			FormSecondName.validate();
 			FormLogin.validate();
 			FormEmail.validate();
 			FormPhone.validate();
 			FormChatName.validate();
-		}
-		const onClickButton = () => {
+		};	const onClickButton = async () => {
 			validateAll();
-			console.log(getFormData([
+			const formData = getFormData([
 				FormFirstName,
 				FormSecondName,
 				FormLogin,
 				FormEmail,
 				FormPhone,
 				FormChatName,
-			]))
-		}
-		super({
+			]) as Record<string, string>;		await userController.changeUserProfile({
+				first_name: formData.first_name,
+				second_name: formData.second_name,
+				display_name: formData.display_name,
+				login: formData.login,
+				email: formData.email,
+				phone: formData.phone,
+			});
+		};	super({
+			...props,
 			avatar: user.avatar,
-			username: user.username || 'User',
+			username: user.username || "User",
 			FormEmail,
 			FormLogin,
 			FormFirstName,
@@ -121,15 +144,13 @@ export class ProfileEditPage extends Block {
 			FormPhone,
 			SaveButton: new Button({
 				isFull: true,
-				label: 'Сохранить',
+				label: "Сохранить",
 				variant: ButtonVariantEnum.PRIMARY,
 				events: {
-					click: onClickButton
-				}
+					click: onClickButton,
+				},
 			}),
-		});
-	}
-
+		});}
 	override render() {
 		return `
             <main class="profile-container">
@@ -147,9 +168,17 @@ export class ProfileEditPage extends Block {
                 </div>
                 <div class="profile-actions">
                     <div class="profile-buttons">
-                        {{{ SaveButton }}}
+                    ${this.props.requestStatus.loading ? '<div class="loader"></div>' : "{{{ SaveButton }}}"}
                     </div>
+                   	${this.props.requestStatus.error ? `<div class="error-message">${this.props.requestStatus.error}</div>` : ""}
                 </div>
             </main>`;
 	}
 }
+
+const mapStateToProps = (state: Partial<AppState>) => ({
+	user: state.user,
+	requestStatus: state.requestStatus
+});
+
+export const ProfileEditPage = connect(mapStateToProps)(ProfileEditPageBase);

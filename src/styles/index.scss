@@ -5,10 +5,10 @@
     --light-color: #a2a2a2;
     --border-color: #e6e6e6;
     --secondary-color: #333;
-    --chat-sender-color: #F8F8F8;
-    --chat-receiver-color: #E4EDFD;
+    --chat-sender-color: #f8f8f8;
+    --chat-receiver-color: #e4edfd;
     --chat-window-color: #edf2ff;
-    --chat-item-color:  #e4edfd;
+    --chat-item-color: #e4edfd;
 }
 
 * {
@@ -38,4 +38,13 @@ label {
 
 p {
     text-align: center;
+}
+.loader {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto;
 }
