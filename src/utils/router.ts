@@ -16,14 +16,16 @@ class Router {
 			Router.__instance = new Router(rootQuery);
 		}
 		return Router.__instance;
-	}use(
+	}
+	use(
 		pathname: string,
 		block: new (props?: Record<string, any>) => Block,
 	): Router {
 		const route = new Route(pathname, block, { rootQuery: this._rootQuery });
 		this.routes.push(route);
 		return this;
-	}start(): void {
+	}
+	start(): void {
 		window.onpopstate = (event) => {
 			const target = event.currentTarget as Window;
 			this._onRoute(target.location.pathname);
@@ -44,7 +46,8 @@ class Router {
 			}
 			return;
 		}	this._setCurrentRoute(route);
-	}// Выделяем логику установки текущего маршрута в отдельный метод
+	}
+	// Выделяем логику установки текущего маршрута в отдельный метод
 	private _setCurrentRoute(route: Route): void {
 		// Если есть текущий маршрут и он отличается от нового,
 		// вызываем leave() для корректного уничтожения компонентов

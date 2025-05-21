@@ -3,12 +3,14 @@ import UserController from "../../controllers/user";
 import "./Avatar.scss";
 import {AvatarProps} from "./types.ts";
 import {BASE_URL} from "../../constanst.ts";
+import {AppState} from "../../types.ts";
+import connect from "../../utils/connect.ts";
+import {avatarUrl} from "../../mocks.ts";
 
-export class Avatar extends Block {
+export class AvatarBase extends Block {
 	private readonly fileInput: HTMLInputElement;constructor(props: AvatarProps) {
 		super({
 			...props,
-			alt: props.alt || "User avatar",
 			size: props.size || "medium",
 			editable: props.editable !== undefined ? props.editable : true,
 			events: {
@@ -36,16 +38,16 @@ export class Avatar extends Block {
 		const input = e.target as HTMLInputElement;
 		if (!input.files || input.files.length === 0) {
 			return;
-		}	const file = input.files[0];	const maxSize = 5 * 1024 * 1024;
+		}
+		const file = input.files[0];
+		const maxSize = 5 * 1024 * 1024;
 		if (file.size > maxSize) {
 			alert('Файл слишком большой. Максимальный размер 5 МБ.');
 			return;
 		}	try {
-			this.setProps({ loading: true });		await UserController.changeAvatar(file);		input.value = '';	} catch (error) {
+			await UserController.changeAvatar(file);		input.value = '';	} catch (error) {
 			console.error('Ошибка при загрузке аватара:', error);
 			alert('Не удалось загрузить аватар. Пожалуйста, попробуйте еще раз.');
-		} finally {
-			this.setProps({ loading: false });
 		}
 	}
 	override componentWillUnmount(): void {
@@ -55,16 +57,20 @@ export class Avatar extends Block {
 		}
 	}
 	override render(): string {
-		const { avatarUrl, alt, size, editable, loading } = this.props;	const avatarClass = `avatar avatar-${size} ${editable ? 'avatar-editable' : ''}`;
+		const { user: {avatar, first_name, second_name}, size, editable, requestStatus: {loading} } = this.props;
+		const avatarClass = `avatar avatar-${size} ${editable ? 'avatar-editable' : ''}`;
 		const baseUrl = `${BASE_URL}/resources`;
-		const fullAvatarUrl = avatarUrl ? `${baseUrl}${avatarUrl}` : '';	return `
+		const fullAvatarUrl = avatar ? `${baseUrl}${avatar}` : avatarUrl;
+		const username = `${first_name} ${second_name}`;
+
+		return `
             <div class="${avatarClass}">
                 ${!fullAvatarUrl ? `
                     <div class="avatar-placeholder">
-                        <span>${alt?.charAt(0) || 'U'}</span>
+                        <span>${username}</span>
                     </div>
                 ` : `
-                    <img src="${fullAvatarUrl}" alt="${alt}" class="avatar-image" />
+                    <img src="${fullAvatarUrl}" alt="${username} avatar" class="avatar-image" />
                 `}
                 
                 ${editable ? `
@@ -83,3 +89,10 @@ export class Avatar extends Block {
         `;
 	}
 }
+
+const mapStateToProps = (state: Partial<AppState>) => ({
+	user: state.user,
+	requestStatus: state.requestStatus
+});
+
+export const Avatar = connect(mapStateToProps)(AvatarBase);

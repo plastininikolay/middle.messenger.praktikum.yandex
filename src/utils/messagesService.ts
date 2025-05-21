@@ -4,7 +4,7 @@ import {BASE_URL, BASE_WEBSOCKET_URL} from "../constanst.ts";
 
 class MessagesService {
 	private socket: WebSocket | null = null;
-	private pingInterval: number | null = null;
+	private pingInterval: NodeJS.Timeout | null = null;
 	private http = new HTTPTransport();
 	private chatId: number | null = null;
 
